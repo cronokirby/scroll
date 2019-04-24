@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 import fixScaling from './fixScaling.js';
 import { Control, Controller } from './controller';
 import { SpriteSheet } from './sprites';
+import Game from './game/Game';
 
 
 fixScaling();
@@ -28,9 +29,6 @@ controller.onPress(Control.Down, () => console.log('Down'));
 
 PIXI.loader.add(SpriteSheet.deps).load(() => {
     const spriteSheet = new SpriteSheet();
-    const spriteA = spriteSheet.indexSprite(0, 0);
-    spriteA.x = 64;
-    app.stage.addChild(spriteA);
-    const spriteB = spriteSheet.indexSprite(2, 0);
-    app.stage.addChild(spriteB);
+    const game = new Game(spriteSheet, controller);
+    game.setStage(app.stage);
 });
