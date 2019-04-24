@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
-import { sheet } from './loader.js';
 import fixScaling from './fixScaling.js';
+import { SpriteSheet } from './sprites';
+
 
 fixScaling();
 
@@ -11,15 +12,18 @@ const app = new PIXI.Application({
 });
 
 window.addEventListener('load', () => {
-    document.getElementById('game').appendChild(app.view);
+    const gameEl = document.getElementById('game');
+    if (gameEl) {
+        gameEl.appendChild(app.view);
+    }
 })
 
 
-PIXI.loader.add(sheet).load(() => {
-    const rect = new PIXI.Rectangle(0, 0, 16, 16);
-    const texture = PIXI.loader.resources[sheet].texture;
-    texture.frame = rect;
-    const sprite = new PIXI.Sprite(texture);
-    sprite.scale.set(2, 2);
-    app.stage.addChild(sprite);
+PIXI.loader.add(SpriteSheet.deps).load(() => {
+    const spriteSheet = new SpriteSheet();
+    const spriteA = spriteSheet.indexSprite(0, 0);
+    spriteA.x = 64;
+    app.stage.addChild(spriteA);
+    const spriteB = spriteSheet.indexSprite(2, 0);
+    app.stage.addChild(spriteB);
 });
