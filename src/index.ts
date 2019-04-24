@@ -5,13 +5,13 @@ import fixScaling from './fixScaling.js';
 fixScaling();
 
 const app = new PIXI.Application({
-    width: 256,
-    height: 256,
+    width: 640,
+    height: 640,
     resolution: devicePixelRatio
 });
 
 window.addEventListener('load', () => {
-    document.body.appendChild(app.view);
+    document.getElementById('game').appendChild(app.view);
 })
 
 
