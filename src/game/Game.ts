@@ -1,6 +1,8 @@
 import * as PIXI from 'pixi.js';
 import { Control, Controller } from '../controller';
 import { SpriteSheet } from '../sprites';
+import GameView from './GameView';
+import { Action, TurnState } from './turnState';
 
 /**
  * Represents an entire Game.
@@ -10,28 +12,35 @@ import { SpriteSheet } from '../sprites';
  * sprites in the stage for rendering.
  */
 class Game {
-    private _player: PIXI.Sprite;
+    private _view: GameView;
+    private _turnState: TurnState;
 
     /**
      * Construct a new game given sprite and control information.
      * 
-     * @param _sheet the sprite sheet for this game
-     * @param _controller the controller for player input
+     * @param sheet the sprite sheet for this game
+     * @param controller the controller for player input
      */
-    constructor(private _sheet: SpriteSheet, private _controller: Controller) {
-        this._player = this._sheet.indexSprite(0, 0);
-        this._controller.onPress(Control.Left, () => {
-            this._player.x -= 32;
+    constructor(sheet: SpriteSheet, controller: Controller) {
+        this._view = new GameView(sheet);
+        this._turnState = new TurnState();
+        controller.onPress(Control.Left, () => {
+            this.advance(Action.MoveLeft)
         });
-        this._controller.onPress(Control.Right, () => {
-            this._player.x += 32;
+        controller.onPress(Control.Right, () => {
+            this.advance(Action.MoveRight)
         });
-        this._controller.onPress(Control.Up, () => {
-            this._player.y -= 32;
+        controller.onPress(Control.Up, () => {
+            this.advance(Action.MoveUp)
         });
-        this._controller.onPress(Control.Down, () => {
-            this._player.y += 32;
+        controller.onPress(Control.Down, () => {
+            this.advance(Action.MoveDown)
         });
+    }
+
+    private advance(action: Action) {
+        this._turnState.advance(action);
+        this._turnState.update(this._view);
     }
 
     /**
@@ -43,7 +52,7 @@ class Game {
      * @param container the container to draw things inside
      */
     setStage(container: PIXI.Container) {
-        container.addChild(this._player);
+        this._view.setStage(container);
     }
 }
 export default Game;
