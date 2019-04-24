@@ -7,8 +7,8 @@ import { SpriteSheet } from './sprites';
 fixScaling();
 
 const app = new PIXI.Application({
-    width: 640,
-    height: 640,
+    width: 32 * 16,
+    height: 32 * 16,
     resolution: devicePixelRatio
 });
 
