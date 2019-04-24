@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import fixScaling from './fixScaling.js';
+import { Control, Controller } from './controller';
 import { SpriteSheet } from './sprites';
 
 
@@ -18,6 +19,12 @@ window.addEventListener('load', () => {
     }
 })
 
+
+const controller = new Controller();
+controller.onPress(Control.Left, () => console.log('Left'));
+controller.onPress(Control.Right, () => console.log('Right'));
+controller.onPress(Control.Up, () => console.log('Up'));
+controller.onPress(Control.Down, () => console.log('Down'));
 
 PIXI.loader.add(SpriteSheet.deps).load(() => {
     const spriteSheet = new SpriteSheet();
