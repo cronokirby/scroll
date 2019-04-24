@@ -3,6 +3,7 @@ import { Control, Controller } from '../controller';
 import { SpriteSheet } from '../sprites';
 import GameView from './GameView';
 import { Action, TurnState } from './turnState';
+import Log from './Log';
 
 /**
  * Represents an entire Game.
@@ -14,6 +15,7 @@ import { Action, TurnState } from './turnState';
 class Game {
     private _view: GameView;
     private _turnState: TurnState;
+    private _log: Log;
 
     /**
      * Construct a new game given sprite and control information.
@@ -24,6 +26,7 @@ class Game {
     constructor(sheet: SpriteSheet, controller: Controller) {
         this._view = new GameView(sheet);
         this._turnState = new TurnState();
+        this._log = new Log();
         controller.onPress(Control.Left, () => {
             this.advance(Action.MoveLeft)
         });
@@ -52,7 +55,8 @@ class Game {
      * @param container the container to draw things inside
      */
     setStage(container: PIXI.Container) {
-        this._view.setStage(container);
+        this._view.addTo(container, 320, 0);
+        this._log.addTo(container, 0, 10);
     }
 }
 export default Game;

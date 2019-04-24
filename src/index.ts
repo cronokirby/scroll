@@ -8,7 +8,7 @@ import Game from './game/Game';
 fixScaling();
 
 const app = new PIXI.Application({
-    width: 32 * 16,
+    width: 400 + 32 * 16,
     height: 32 * 16,
     resolution: devicePixelRatio
 });
@@ -38,5 +38,5 @@ PIXI.loader
             fill: 'white',
             fontSize: 14
         });
-        app.stage.addChild(new PIXI.Text('\nThe big mouse slashes', style));
+        //app.stage.addChild(new PIXI.Text('\nThe big mouse slashes', style));
     });
