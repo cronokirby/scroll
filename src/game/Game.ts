@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { Control, Controller } from '../controller';
 import { SpriteSheet } from '../sprites';
+import Area from './Area';
 import Log from './Log';
 
 
@@ -14,6 +15,7 @@ import Log from './Log';
 class Game {
     private _gameStage: PIXI.Container = new PIXI.Container();
     private _player: PIXI.Sprite;
+    private _area: Area;
     private _log: Log;
 
     /**
@@ -24,6 +26,8 @@ class Game {
      */
     constructor(sheet: SpriteSheet, controller: Controller) {
         this._player = sheet.indexSprite(0, 0);
+        this._area = new Area(sheet);
+        this._area.addTo(this._gameStage);
         this._gameStage.addChild(this._player);
         this._gameStage.x = 320;
         this._log = new Log();
