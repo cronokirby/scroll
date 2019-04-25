@@ -1,9 +1,8 @@
 import * as PIXI from 'pixi.js';
 import { Control, Controller } from '../controller';
 import { SpriteSheet } from '../sprites';
-import GameView from './GameView';
-import { Action, TurnState } from './turnState';
 import Log from './Log';
+
 
 /**
  * Represents an entire Game.
@@ -13,8 +12,8 @@ import Log from './Log';
  * sprites in the stage for rendering.
  */
 class Game {
-    private _view: GameView;
-    private _turnState: TurnState;
+    private _gameStage: PIXI.Container = new PIXI.Container();
+    private _player: PIXI.Sprite;
     private _log: Log;
 
     /**
@@ -24,26 +23,15 @@ class Game {
      * @param controller the controller for player input
      */
     constructor(sheet: SpriteSheet, controller: Controller) {
-        this._view = new GameView(sheet);
-        this._turnState = new TurnState();
+        this._player = sheet.indexSprite(0, 0);
+        this._gameStage.addChild(this._player);
+        this._gameStage.x = 320;
         this._log = new Log();
-        controller.onPress(Control.Left, () => {
-            this.advance(Action.MoveLeft)
-        });
-        controller.onPress(Control.Right, () => {
-            this.advance(Action.MoveRight)
-        });
-        controller.onPress(Control.Up, () => {
-            this.advance(Action.MoveUp)
-        });
-        controller.onPress(Control.Down, () => {
-            this.advance(Action.MoveDown)
-        });
-    }
 
-    private advance(action: Action) {
-        this._turnState.advance(action, this._log);
-        this._turnState.update(this._view);
+        controller.onPress(Control.Left, this.onMoveLeft.bind(this));
+        controller.onPress(Control.Right, this.onMoveRight.bind(this));
+        controller.onPress(Control.Down, this.onMoveDown.bind(this));
+        controller.onPress(Control.Up, this.onMoveUp.bind(this));
     }
 
     /**
@@ -55,8 +43,29 @@ class Game {
      * @param container the container to draw things inside
      */
     setStage(container: PIXI.Container) {
-        this._view.addTo(container, 320, 0);
+        container.addChild(this._gameStage);
         this._log.addTo(container, 0, 10);
+    }
+
+
+    private onMoveLeft() {
+        this._log.addMsg('You moved left');
+        this._player.x -= 32;
+    }
+
+    private onMoveRight() {
+        this._log.addMsg('You moved right');
+        this._player.x += 32;
+    }
+
+    private onMoveUp() {
+        this._log.addMsg('You moved up');
+        this._player.y -= 32;
+    }
+
+    private onMoveDown() {
+        this._log.addMsg('You moved down');
+        this._player.y += 32
     }
 }
 export default Game;
