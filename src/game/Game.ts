@@ -3,6 +3,7 @@ import { Control, Controller } from '../controller';
 import { SpriteSheet } from '../sprites';
 import Area from './Area';
 import Log from './Log';
+import Player from './Player';
 
 
 /**
@@ -14,7 +15,7 @@ import Log from './Log';
  */
 class Game {
     private _gameStage: PIXI.Container = new PIXI.Container();
-    private _player: PIXI.Sprite;
+    private _player: Player;
     private _area: Area;
     private _log: Log;
 
@@ -25,10 +26,10 @@ class Game {
      * @param controller the controller for player input
      */
     constructor(sheet: SpriteSheet, controller: Controller) {
-        this._player = sheet.indexSprite(0, 0);
+        this._player = new Player(sheet);
         this._area = new Area(sheet);
         this._area.addTo(this._gameStage);
-        this._gameStage.addChild(this._player);
+        this._player.addTo(this._gameStage);
         this._gameStage.x = 320;
         this._log = new Log();
 
@@ -54,22 +55,22 @@ class Game {
 
     private onMoveLeft() {
         this._log.addMsg('You moved left');
-        this._player.x -= 32;
+        this._player.x--;
     }
 
     private onMoveRight() {
         this._log.addMsg('You moved right');
-        this._player.x += 32;
+        this._player.x++;
     }
 
     private onMoveUp() {
         this._log.addMsg('You moved up');
-        this._player.y -= 32;
+        this._player.y--;
     }
 
     private onMoveDown() {
         this._log.addMsg('You moved down');
-        this._player.y += 32
+        this._player.y++;
     }
 }
 export default Game;
