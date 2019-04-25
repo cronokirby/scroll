@@ -3,7 +3,8 @@ import { Control, Controller } from '../controller';
 import { SpriteSheet } from '../sprites';
 import Area from './Area';
 import Log from './Log';
-import Player from './Player';
+import Player from './entities/Player';
+import Mouse from './entities/monsters/Mouse';
 
 
 /**
@@ -28,6 +29,7 @@ class Game {
     constructor(sheet: SpriteSheet, controller: Controller) {
         this._player = new Player(sheet);
         this._area = new Area(sheet);
+        this._area.addEntity(new Mouse(sheet), 8, 8);
         this._area.addTo(this._gameStage);
         this._player.addTo(this._gameStage);
         this._gameStage.x = 320;

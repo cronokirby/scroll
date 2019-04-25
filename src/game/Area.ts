@@ -1,5 +1,5 @@
 import { Color, SpriteSheet } from '../sprites';
-import Entity from './Entity';
+import LivingEntity from './entities/LivingEntity';
 
 
 interface Tile {
@@ -79,6 +79,7 @@ class TileGrid {
 class Area {
     private _stage = new PIXI.Container();
     private _grid = new TileGrid(16, 16, this._stage);
+    private _entities: LivingEntity[] = [];
 
     constructor(sheet: SpriteSheet) {
         const positions = [{ x: 1, y: 1 }, { x: 2, y: 4 }];
@@ -100,15 +101,33 @@ class Area {
     }
 
     /**
+     * This adds a living entity both logically and visually.
+     * 
+     * @param entity the living entity to add
+     */
+    addEntity(entity: LivingEntity, x?: number, y?: number) {
+        this._entities.push(entity);
+        entity.addTo(this._stage);
+        if (x) entity.x = x;
+        if (y) entity.y = y;
+    }
+
+    /**
      * Move an entity in this area, stopping for walls.
      * 
      * @param entity the entity to try and move
      */
-    moveEntity(entity: Entity, x: number, y: number) {
-        if (!this._grid.isWall(x, y)) {
-            entity.x = x;
-            entity.y = y;
+    moveEntity(entity: LivingEntity, x: number, y: number) {
+        if (this._grid.isWall(x, y)) return;
+        for (let e of this._entities) {
+            if (e.x == x && e.y == y) {
+                entity.fight(e);
+                e.fight(entity);
+                return;
+            }
         }
+        entity.x = x;
+        entity.y = y;
     }
 }
 export default Area;
