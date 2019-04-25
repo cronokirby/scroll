@@ -1,18 +1,19 @@
 import LivingEntity from "../LivingEntity";
 import { SpriteSheet } from '../../../sprites';
+import Log from "../../Log";
 
 
 class Mouse extends LivingEntity {
-    constructor(sheet: SpriteSheet) {
-        super(sheet.indexSprite(1, 1));
+    constructor(sheet: SpriteSheet, private _log: Log) {
+        super(sheet.indexSprite(0, 4));
     }
 
     hit() {
-        console.log('Mouse was hit');
+        this._log.addMsg('The Mouse takes ? damage');
     }
 
     fight(other: LivingEntity): void {
-        console.log('Mouse bites back!');
+        this._log.addMsg('The Mouse bites with its tiny fangs!');
         other.hit();
     }
 }

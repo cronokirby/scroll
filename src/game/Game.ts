@@ -27,13 +27,13 @@ class Game {
      * @param controller the controller for player input
      */
     constructor(sheet: SpriteSheet, controller: Controller) {
-        this._player = new Player(sheet);
+        this._log = new Log();
+        this._player = new Player(sheet, this._log);
         this._area = new Area(sheet);
-        this._area.addEntity(new Mouse(sheet), 8, 8);
+        this._area.addEntity(new Mouse(sheet, this._log), 8, 8);
         this._area.addTo(this._gameStage);
         this._player.addTo(this._gameStage);
         this._gameStage.x = 320;
-        this._log = new Log();
 
         controller.onPress(Control.Left, this.onMoveLeft.bind(this));
         controller.onPress(Control.Right, this.onMoveRight.bind(this));
@@ -56,25 +56,21 @@ class Game {
 
 
     private onMoveLeft() {
-        this._log.addMsg('You moved left');
         const {x, y} = this._player.pos;
         this._area.moveEntity(this._player, x - 1, y);
     }
 
     private onMoveRight() {
-        this._log.addMsg('You moved right');
         const {x, y} = this._player.pos;
         this._area.moveEntity(this._player, x + 1, y);
     }
 
     private onMoveUp() {
-        this._log.addMsg('You moved up');
         const {x, y} = this._player.pos;
         this._area.moveEntity(this._player, x, y - 1);
     }
 
     private onMoveDown() {
-        this._log.addMsg('You moved down');
         const {x, y} = this._player.pos;
         this._area.moveEntity(this._player, x, y + 1);
     }
