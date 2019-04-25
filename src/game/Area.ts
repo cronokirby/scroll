@@ -1,4 +1,5 @@
 import { Color, SpriteSheet } from '../sprites';
+import Entity from './Entity';
 
 
 interface Tile {
@@ -40,7 +41,6 @@ class TileGrid {
         sprite.x = 32 * x;
         sprite.y = 32 * y;
         this._stage.addChild(sprite);
-        console.log(sprite);
     }
 
     /**
@@ -90,6 +90,18 @@ class Area {
      */
     addTo(stage: PIXI.Container) {
         stage.addChild(this._stage);
+    }
+
+    /**
+     * Move an entity in this area, stopping for walls.
+     * 
+     * @param entity the entity to try and move
+     */
+    moveEntity(entity: Entity, x: number, y: number) {
+        if (!this._grid.isWall(x, y)) {
+            entity.x = x;
+            entity.y = y;
+        }
     }
 }
 export default Area;

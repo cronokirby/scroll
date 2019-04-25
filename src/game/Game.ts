@@ -55,22 +55,26 @@ class Game {
 
     private onMoveLeft() {
         this._log.addMsg('You moved left');
-        this._player.x--;
+        const {x, y} = this._player.pos;
+        this._area.moveEntity(this._player, x - 1, y);
     }
 
     private onMoveRight() {
         this._log.addMsg('You moved right');
-        this._player.x++;
+        const {x, y} = this._player.pos;
+        this._area.moveEntity(this._player, x + 1, y);
     }
 
     private onMoveUp() {
         this._log.addMsg('You moved up');
-        this._player.y--;
+        const {x, y} = this._player.pos;
+        this._area.moveEntity(this._player, x, y - 1);
     }
 
     private onMoveDown() {
         this._log.addMsg('You moved down');
-        this._player.y++;
+        const {x, y} = this._player.pos;
+        this._area.moveEntity(this._player, x, y + 1);
     }
 }
 export default Game;

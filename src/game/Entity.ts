@@ -33,11 +33,6 @@ abstract class Entity {
         return {x: this._x, y: this._y};
     }
 
-    set pos({x, y}: {x: number, y: number}) {
-        this._x = x;
-        this._y = y;
-    }
-
     /**
      * Add this entity to a given stage.
      * 
