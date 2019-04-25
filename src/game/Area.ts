@@ -18,13 +18,17 @@ interface Tile {
 class TileGrid {
     private _tiles: Tile[][];
 
-    constructor(xSize: number, ySize: number, private _stage: PIXI.Container) {
-        const size = xSize * ySize;
-        this._tiles = Array(xSize);
-        for (let x = 0; x < xSize; ++x) {
-            const arr = Array(ySize);
+    constructor(
+        private _xSize: number,
+        private _ySize: number,
+        private _stage: PIXI.Container
+    ) {
+        const size = this._xSize * this._ySize;
+        this._tiles = Array(this._xSize);
+        for (let x = 0; x < this._xSize; ++x) {
+            const arr = Array(this._ySize);
             this._tiles[x] = arr;
-            for (let y = 0; y < ySize; ++y) {
+            for (let y = 0; y < this._ySize; ++y) {
                 arr[y] = { sprite: null, isWall: false };
             }
         }
@@ -58,8 +62,11 @@ class TileGrid {
 
     /**
      * Check whether or not a certain slot is a wall.
+     * Out of bounds is considered a wall.
      */
     isWall(x: number, y: number): boolean {
+        if (x < 0 || x >= this._xSize) return true;
+        if (y < 0 || y >= this._ySize) return true;
         return this._tiles[x][y].isWall;
     }
 }
