@@ -8,7 +8,7 @@ import Game from './game/Game';
 fixScaling();
 
 const app = new PIXI.Application({
-    width: 400 + 32 * 16,
+    width: 320 + 32 * 16,
     height: 32 * 16,
     resolution: devicePixelRatio
 });
@@ -33,10 +33,4 @@ PIXI.loader
         const spriteSheet = new SpriteSheet();
         const game = new Game(spriteSheet, controller);
         game.setStage(app.stage);
-        const style = new PIXI.TextStyle({
-            fontFamily: 'Iosevka, Courier New, monospace',
-            fill: 'white',
-            fontSize: 14
-        });
-        //app.stage.addChild(new PIXI.Text('\nThe big mouse slashes', style));
     });
