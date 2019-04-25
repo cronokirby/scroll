@@ -1,4 +1,4 @@
-import { SpriteSheet } from '../sprites';
+import { Color, SpriteSheet } from '../sprites';
 
 interface Tile {
     sprite: PIXI.Sprite | null,
@@ -50,9 +50,11 @@ class Area {
     constructor(sheet: SpriteSheet) {
         const positions = [{ x: 1, y: 1 }, { x: 2, y: 4 }];
         for (let { x, y } of positions) {
-            this._grid.setTile(x, y, sheet.indexSprite(0, 8), true);
+            const sprite = sheet.indexSprite(0, 8, Color.Gray);
+            this._grid.setTile(x, y, sprite, true);
         }
-        this._grid.setTile(10, 10, sheet.indexSprite(3, 15))
+        const sprite = sheet.indexSprite(3, 8, Color.Gray);
+        this._grid.setTile(10, 10, sprite);
     }
 
     addTo(stage: PIXI.Container) {
