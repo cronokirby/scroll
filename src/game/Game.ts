@@ -42,7 +42,7 @@ class Game {
     }
 
     private advance(action: Action) {
-        this._turnState.advance(action);
+        this._turnState.advance(action, this._log);
         this._turnState.update(this._view);
     }
 

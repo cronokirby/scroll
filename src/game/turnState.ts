@@ -1,4 +1,5 @@
 import GameView from './GameView';
+import Log from './Log'
 
 
 interface Pos {
@@ -29,20 +30,25 @@ export class TurnState {
      * Advance the state of the game by having the player take an action.
      * 
      * @param action the action the player takes this turn
+     * @param log the log to write messages to
      */
-    advance(action: Action) {
+    advance(action: Action, log: Log) {
         switch (action) {
             case Action.MoveLeft:
                 this._playerPos.x--;
+                log.addMsg('You move left');
                 break;
             case Action.MoveRight:
                 this._playerPos.x++;
+                log.addMsg('You move right');
                 break;
             case Action.MoveUp:
                 this._playerPos.y--;
+                log.addMsg('You move up');
                 break;
             case Action.MoveDown:
                 this._playerPos.y++;
+                log.addMsg('You move down');
                 break;
         }
     }
