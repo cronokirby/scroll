@@ -8,6 +8,7 @@ import * as Pos from "../../position";
 
 class Mouse extends LivingEntity {
     private _stats = { attack: 2, defense: 2 };
+    private _health = 14;
     private _direction: Pos.Direction;
 
     constructor(sheet: SpriteSheet, private _log: Log) {
@@ -17,6 +18,7 @@ class Mouse extends LivingEntity {
 
     hit(attacking: Stats) {
         const damage = getDamage(attacking, this._stats);
+        this._health -= damage;
         this._log.addMsg(`The Mouse takes ${damage} damage`);
     }
 
@@ -47,6 +49,15 @@ class Mouse extends LivingEntity {
             this.chooseDirection(this._direction);
         }
         area.moveEntity(this, nextPos);
+    }
+
+    isDead(): boolean {
+        return this._health <= 0;
+    }
+
+    die() {
+        this._sprite.destroy();
+        this._log.addMsg('The Mouse dies');
     }
 }
 export default Mouse;

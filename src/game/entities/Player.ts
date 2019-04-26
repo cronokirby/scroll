@@ -25,5 +25,13 @@ class Player extends LivingEntity {
     advance(area: Area) {
 
     }
+
+    isDead(): boolean {
+        return false;
+    }
+
+    die() {
+        this._log.addMsg('You die!');
+    }
 }
 export default Player;

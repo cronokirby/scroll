@@ -32,6 +32,7 @@ class Game {
         this._player = new Player(sheet, this._log);
         this._area = new Area(sheet);
         this._area.addEntity(new Mouse(sheet, this._log), { x: 10, y: 8 });
+        this._area.addEntity(new Mouse(sheet, this._log), { x: 10, y: 2 });
         this._area.player = this._player;
         this._area.addTo(this._gameStage);
         this._player.addTo(this._gameStage);

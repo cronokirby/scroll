@@ -10,7 +10,7 @@ abstract class Entity {
     private _x: number = 0;
     private _y: number = 0;
 
-    constructor(private _sprite: PIXI.Sprite) { }
+    constructor(protected _sprite: PIXI.Sprite) { }
 
     get x(): number {
         return this._x;

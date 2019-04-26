@@ -116,28 +116,6 @@ class Area {
         if (y) entity.y = y;
     }
 
-    set player(newPlayer: LivingEntity) {
-        this._player = newPlayer;
-    }
-
-    private move(entity: LivingEntity, player: boolean, pos: Pos.Pos) {
-        if (this._grid.isWall(pos)) return;
-        if (!player && Pos.same(this._player.pos, pos)) {
-            entity.fight(this._player);
-            return;
-        }
-        if (player) {
-            const enemy = this._entities.find(e => Pos.same(e.pos, pos));
-            if (enemy) {
-                entity.fight(enemy);
-                enemy.fight(entity);
-                this._tookTurn.add(enemy);
-                return;
-            }
-        }
-        entity.pos = pos;
-    }
-
     /**
      * Check whether or not a certain position has a wall.
      * This is useful to make decisions for enemy AI.
@@ -165,6 +143,10 @@ class Area {
         this.advance();
     }
 
+    set player(newPlayer: LivingEntity) {
+        this._player = newPlayer;
+    }
+
     /**
      * Get the current position of the player.
      * This is necessary for the AI of many monsters, since they might
@@ -174,6 +156,40 @@ class Area {
         return this._player.pos;
     }
 
+
+    private move(entity: LivingEntity, player: boolean, pos: Pos.Pos) {
+        if (this._grid.isWall(pos)) return;
+        if (!player && Pos.same(this._player.pos, pos)) {
+            entity.fight(this._player);
+            return;
+        }
+        const enemy = this._entities.find(e => Pos.same(e.pos, pos));
+        if (enemy) {
+            if (player) {
+                entity.fight(enemy);
+                if (enemy.isDead()) {
+                    this.removeDeadEntities();
+                    return;
+                }
+                enemy.fight(entity);
+                this._tookTurn.add(enemy);
+            }
+            return;
+        }
+        entity.pos = pos;
+    }
+
+    private removeDeadEntities() {
+        this._entities = this._entities.filter(e => {
+            if (e.isDead()) {
+                e.die();
+                return false;
+            } else {
+                return true;
+            }
+        });
+    }
+    
     private advance(): void {
         for (let e of this._entities) {
             if (!this._tookTurn.has(e)) {
@@ -181,6 +197,7 @@ class Area {
             }
         }
         this._tookTurn = new Set([]);
+        this.removeDeadEntities();
     }
 }
 export default Area;

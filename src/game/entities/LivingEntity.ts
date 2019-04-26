@@ -9,5 +9,7 @@ abstract class LivingEntity extends Entity {
     abstract hit(attack: Stats): void;
     abstract fight(other: LivingEntity): void;
     abstract advance(area: Area): void;
+    abstract isDead(): boolean;
+    abstract die(): void;
 }
 export default LivingEntity;
