@@ -82,6 +82,7 @@ class Area {
     private _grid = new TileGrid(16, 16, this._stage);
     private _entities: LivingEntity[] = [];
     private _player: LivingEntity;
+    private _tookTurn: Set<LivingEntity> = new Set([]);
 
     constructor(sheet: SpriteSheet) {
         const positions = [{ x: 1, y: 1 }, { x: 2, y: 4 }];
@@ -128,6 +129,7 @@ class Area {
             if (e.x == x && e.y == y) {
                 entity.fight(e);
                 e.fight(entity);
+                this._tookTurn.add(e);
                 return;
             }
         }
@@ -156,8 +158,11 @@ class Area {
 
     private advance(): void {
         for (let e of this._entities) {
-            e.advance(this);
+            if (!this._tookTurn.has(e)) {
+                e.advance(this);
+            }
         }
+        this._tookTurn = new Set([]);
     }
 }
 export default Area;
