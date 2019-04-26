@@ -67,3 +67,31 @@ export function up(pos: Pos): Pos {
 export function down(pos: Pos): Pos {
     return moved(pos, Direction.Down);
 }
+
+/**
+ * Return the manhattan distance from one position to another.
+ */
+export function distance(from: Pos, to: Pos): number {
+    return Math.abs(from.x - to.x) + Math.abs(from.y - to.y);
+}
+
+/**
+ * This function can be used to naively calculate the next position
+ * on the path between 2 positions. This will just use straightforward
+ * distance difference, and not do any pathfinding.
+ */
+export function naiveNext(from: Pos, to: Pos): Pos {
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    if (dx < 0) {
+        return left(from);
+    } else if (dx > 0) {
+        return right(from);
+    } else if (dy < 0) {
+        return up(from);
+    } else if (dy > 0) {
+        return down(from);
+    } else {
+        return from;
+    }
+}

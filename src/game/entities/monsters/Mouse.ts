@@ -13,7 +13,6 @@ class Mouse extends LivingEntity {
     constructor(sheet: SpriteSheet, private _log: Log) {
         super(sheet.indexSprite(0, 4));
         this.chooseDirection();
-        console.log('Mouse Direction', this._direction);
     }
 
     hit(attacking: Stats) {
@@ -29,18 +28,21 @@ class Mouse extends LivingEntity {
     private chooseDirection(...banned: Pos.Direction[]) {
         const goodDirection = (d: Pos.Direction) => banned.indexOf(d) < 0;
         const goodDirections = Pos.DIRECTIONS.filter(goodDirection);
-        const index = Math.floor(0.5 * goodDirections.length);
+        const index = Math.floor(Math.random() * goodDirections.length);
         this._direction = goodDirections[index];
     }
 
     advance(area: Area) {
-        //const rnd = Math.random();
-        const rnd = 0.5
+        const rnd = Math.random();
         if (rnd < 0.1) {
             this.chooseDirection();
         }
+        const playerPos = area.playerPos;
+        if (Pos.distance(this.pos, playerPos) <= 3) {
+            area.moveEntity(this, Pos.naiveNext(this.pos, playerPos));
+            return;
+        }
         const nextPos = Pos.moved(this.pos, this._direction);
-        console.log('Mouse next pos', nextPos);
         if (area.isWall(nextPos)) {
             this.chooseDirection(this._direction);
         }

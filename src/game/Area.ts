@@ -165,6 +165,15 @@ class Area {
         this.advance();
     }
 
+    /**
+     * Get the current position of the player.
+     * This is necessary for the AI of many monsters, since they might
+     * want to follow or attack the player.
+     */
+    get playerPos(): Pos.Pos {
+        return this._player.pos;
+    }
+
     private advance(): void {
         for (let e of this._entities) {
             if (!this._tookTurn.has(e)) {
