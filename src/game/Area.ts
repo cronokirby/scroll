@@ -1,6 +1,7 @@
 import { Color, SpriteSheet } from '../sprites';
 import LivingEntity from './entities/LivingEntity';
 import * as Pos from './position';
+import { Door } from './floor';
 
 
 interface Tile {
@@ -24,7 +25,6 @@ class TileGrid {
         private _ySize: number,
         private _stage: PIXI.Container
     ) {
-        const size = this._xSize * this._ySize;
         this._tiles = Array(this._xSize);
         for (let x = 0; x < this._xSize; ++x) {
             const arr = Array(this._ySize);
@@ -81,18 +81,24 @@ class TileGrid {
 class Area {
     private _stage = new PIXI.Container();
     private _grid = new TileGrid(16, 16, this._stage);
+    private _doors: Door[] = [];
     private _entities: LivingEntity[] = [];
     private _player: LivingEntity;
     private _tookTurn: Set<LivingEntity> = new Set([]);
 
-    constructor(sheet: SpriteSheet) {
-        const positions = [{ x: 1, y: 1 }, { x: 2, y: 4 }];
-        for (let { x, y } of positions) {
-            const sprite = sheet.indexSprite(0, 8, Color.Gray);
+    constructor(private _sheet: SpriteSheet, ...walls: Pos.Pos[]) {
+        for (let { x, y } of walls) {
+            const sprite = this._sheet.indexSprite(0, 8, Color.Gray);
             this._grid.setTile({x, y}, sprite, true);
         }
-        const sprite = sheet.indexSprite(3, 8, Color.Gray);
-        this._grid.setTile({x: 10, y: 10}, sprite);
+    }
+
+    addDoors(...doors: Door[]) {
+        this._doors = doors;
+        for (let door of doors) {
+            const sprite = this._sheet.indexSprite(13, 8, Color.Gray);
+            this._grid.setTile(door.pos, sprite, true);
+        }
     }
 
     /**
@@ -130,7 +136,7 @@ class Area {
      * @param entity the entity to move
      */
     moveEntity(entity: LivingEntity, pos: Pos.Pos) {
-        this.move(entity, false, pos);
+        this.move(entity, pos, false);
     }
 
     /**
@@ -138,8 +144,12 @@ class Area {
      * 
      * This needs special handling in order to advance all the other entities.
      */
-    movePlayer(pos: Pos.Pos) {
-        this.move(this._player, true, pos);
+    movePlayer(pos: Pos.Pos, force=false) {
+        if (force) {
+            this._player.pos = pos;
+            return;
+        }
+        this.move(this._player, pos, true);
         this.advance();
     }
 
@@ -164,7 +174,14 @@ class Area {
     }
 
 
-    private move(entity: LivingEntity, player: boolean, pos: Pos.Pos) {
+    private move(entity: LivingEntity, pos: Pos.Pos, player: boolean) {
+        if (player) {
+            const door = this._doors.find(d => Pos.same(d.pos, pos));
+            if (door) {
+                door.follow();
+                return;
+            }
+        }
         if (this._grid.isWall(pos)) return;
         if (!player && Pos.same(this._player.pos, pos)) {
             entity.fight(this._player);
