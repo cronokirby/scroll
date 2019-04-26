@@ -3,20 +3,17 @@ import { SpriteSheet } from '../../../sprites';
 import Log from "../../Log";
 import { Stats, getDamage } from "../statistics";
 import Area from "../../Area";
+import * as Pos from "../../position";
 
-
-interface Direction {
-    x: number,
-    y: number
-}
 
 class Mouse extends LivingEntity {
     private _stats = { attack: 2, defense: 2 };
-    private _direction: Direction;
+    private _direction: Pos.Direction;
 
     constructor(sheet: SpriteSheet, private _log: Log) {
         super(sheet.indexSprite(0, 4));
         this.chooseDirection();
+        console.log('Mouse Direction', this._direction);
     }
 
     hit(attacking: Stats) {
@@ -29,30 +26,25 @@ class Mouse extends LivingEntity {
         other.hit(this._stats);
     }
 
-    private chooseDirection(...banned: Direction[]) {
-        const goodDirection = ({ x, y }) => {
-            return !banned.find(v => v.x == x && v.y == y);
-        };
-        const directions = [
-            { x: -1, y: 0 }, { x: 1, y: 0 },
-            { x: 0, y: -1 }, { x: 0, y: 1 }
-        ];
-        const goodDirections = directions.filter(goodDirection);
-        const index = Math.floor(Math.random() * goodDirections.length);
+    private chooseDirection(...banned: Pos.Direction[]) {
+        const goodDirection = (d: Pos.Direction) => banned.indexOf(d) < 0;
+        const goodDirections = Pos.DIRECTIONS.filter(goodDirection);
+        const index = Math.floor(0.5 * goodDirections.length);
         this._direction = goodDirections[index];
     }
 
     advance(area: Area) {
-        const rnd = Math.random();
+        //const rnd = Math.random();
+        const rnd = 0.5
         if (rnd < 0.1) {
             this.chooseDirection();
         }
-        const newX = this.x + this._direction.x;
-        const newY = this.y + this._direction.y;
-        if (area.isWall(newX, newY)) {
-            this.chooseDirection();
+        const nextPos = Pos.moved(this.pos, this._direction);
+        console.log('Mouse next pos', nextPos);
+        if (area.isWall(nextPos)) {
+            this.chooseDirection(this._direction);
         }
-        area.moveEntity(this, newX, newY);
+        area.moveEntity(this, nextPos);
     }
 }
 export default Mouse;

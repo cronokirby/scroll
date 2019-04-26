@@ -5,6 +5,7 @@ import Area from './Area';
 import Log from './Log';
 import Player from './entities/Player';
 import Mouse from './entities/monsters/Mouse';
+import * as Pos from './position';
 
 
 /**
@@ -30,7 +31,7 @@ class Game {
         this._log = new Log();
         this._player = new Player(sheet, this._log);
         this._area = new Area(sheet);
-        this._area.addEntity(new Mouse(sheet, this._log), 10, 8);
+        this._area.addEntity(new Mouse(sheet, this._log), { x: 10, y: 8 });
         this._area.player = this._player;
         this._area.addTo(this._gameStage);
         this._player.addTo(this._gameStage);
@@ -57,23 +58,19 @@ class Game {
 
 
     private onMoveLeft() {
-        const {x, y} = this._player.pos;
-        this._area.movePlayer(x - 1, y);
+        this._area.movePlayer(Pos.left(this._player.pos));
     }
 
     private onMoveRight() {
-        const {x, y} = this._player.pos;
-        this._area.movePlayer(x + 1, y);
+        this._area.movePlayer(Pos.right(this._player.pos));
     }
 
     private onMoveUp() {
-        const {x, y} = this._player.pos;
-        this._area.movePlayer(x, y - 1);
+        this._area.movePlayer(Pos.up(this._player.pos));
     }
 
     private onMoveDown() {
-        const {x, y} = this._player.pos;
-        this._area.movePlayer(x, y + 1);
+        this._area.movePlayer(Pos.down(this._player.pos));
     }
 }
 export default Game;

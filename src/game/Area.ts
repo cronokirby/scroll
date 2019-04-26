@@ -1,5 +1,6 @@
 import { Color, SpriteSheet } from '../sprites';
 import LivingEntity from './entities/LivingEntity';
+import * as Pos from './position';
 
 
 interface Tile {
@@ -40,7 +41,7 @@ class TileGrid {
      * This will automatically change the position of the sprite to be in
      * the right place in the larger container.
      */
-    setTile(x: number, y: number, sprite: PIXI.Sprite, isWall: boolean = false) {
+    setTile({x, y}: Pos.Pos, sprite: PIXI.Sprite, isWall: boolean = false) {
         this._tiles[x][y] = { sprite, isWall };
         sprite.x = 32 * x;
         sprite.y = 32 * y;
@@ -52,7 +53,7 @@ class TileGrid {
      * 
      * This will automatically clean up the slot from the container.
      */
-    removeTile(x: number, y: number) {
+    removeTile({x, y}: Pos.Pos) {
         const sprite = this._tiles[x][y].sprite;
         if (sprite) {
             sprite.destroy();
@@ -64,7 +65,7 @@ class TileGrid {
      * Check whether or not a certain slot is a wall.
      * Out of bounds is considered a wall.
      */
-    isWall(x: number, y: number): boolean {
+    isWall({x, y}: Pos.Pos): boolean {
         if (x < 0 || x >= this._xSize) return true;
         if (y < 0 || y >= this._ySize) return true;
         return this._tiles[x][y].isWall;
@@ -88,10 +89,10 @@ class Area {
         const positions = [{ x: 1, y: 1 }, { x: 2, y: 4 }];
         for (let { x, y } of positions) {
             const sprite = sheet.indexSprite(0, 8, Color.Gray);
-            this._grid.setTile(x, y, sprite, true);
+            this._grid.setTile({x, y}, sprite, true);
         }
         const sprite = sheet.indexSprite(3, 8, Color.Gray);
-        this._grid.setTile(10, 10, sprite);
+        this._grid.setTile({x: 10, y: 10}, sprite);
     }
 
     /**
@@ -108,7 +109,7 @@ class Area {
      * 
      * @param entity the living entity to add
      */
-    addEntity(entity: LivingEntity, x?: number, y?: number) {
+    addEntity(entity: LivingEntity, {x, y}: Partial<Pos.Pos>) {
         this._entities.push(entity);
         entity.addTo(this._stage);
         if (x) entity.x = x;
@@ -119,30 +120,30 @@ class Area {
         this._player = newPlayer;
     }
 
-    private move(entity: LivingEntity, player: boolean, x: number, y: number) {
-        if (this._grid.isWall(x, y)) return;
-        if (!player && this._player.x === x && this._player.y === y) {
+    private move(entity: LivingEntity, player: boolean, pos: Pos.Pos) {
+        if (this._grid.isWall(pos)) return;
+        if (!player && Pos.same(this._player.pos, pos)) {
             entity.fight(this._player);
             return;
         }
-        for (let e of this._entities) {
-            if (e.x == x && e.y == y) {
-                entity.fight(e);
-                e.fight(entity);
-                this._tookTurn.add(e);
+        if (player) {
+            const enemy = this._entities.find(e => Pos.same(e.pos, pos));
+            if (enemy) {
+                entity.fight(enemy);
+                enemy.fight(entity);
+                this._tookTurn.add(enemy);
                 return;
             }
         }
-        entity.x = x;
-        entity.y = y;
+        entity.pos = pos;
     }
 
     /**
      * Check whether or not a certain position has a wall.
      * This is useful to make decisions for enemy AI.
      */
-    isWall(x: number, y: number): boolean {
-        return this._grid.isWall(x, y);
+    isWall(pos: Pos.Pos): boolean {
+        return this._grid.isWall(pos);
     }
 
     /**
@@ -150,8 +151,8 @@ class Area {
      * 
      * @param entity the entity to move
      */
-    moveEntity(entity: LivingEntity, x: number, y: number) {
-        this.move(entity, false, x, y);
+    moveEntity(entity: LivingEntity, pos: Pos.Pos) {
+        this.move(entity, false, pos);
     }
 
     /**
@@ -159,8 +160,8 @@ class Area {
      * 
      * This needs special handling in order to advance all the other entities.
      */
-    movePlayer(x: number, y: number) {
-        this.move(this._player, true, x, y);
+    movePlayer(pos: Pos.Pos) {
+        this.move(this._player, true, pos);
         this.advance();
     }
 

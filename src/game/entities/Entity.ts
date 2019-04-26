@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { Pos } from '../position';
 
 /**
  * Represents an Entity that can move around in a grid.
@@ -9,7 +10,7 @@ abstract class Entity {
     private _x: number = 0;
     private _y: number = 0;
 
-    constructor(private _sprite: PIXI.Sprite) {}
+    constructor(private _sprite: PIXI.Sprite) { }
 
     get x(): number {
         return this._x;
@@ -29,8 +30,13 @@ abstract class Entity {
         this._sprite.y = 32 * newY;
     }
 
-    get pos(): {x: number, y: number} {
-        return {x: this._x, y: this._y};
+    get pos(): Pos {
+        return { x: this._x, y: this._y };
+    }
+
+    set pos({ x, y }: Pos) {
+        this.x = x;
+        this.y = y;
     }
 
     /**
