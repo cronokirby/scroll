@@ -6,6 +6,7 @@ import Log from './Log';
 import Player from './entities/Player';
 import Mouse from './entities/monsters/Mouse';
 import * as Pos from './position';
+import ShortStats from './ShortStats';
 
 
 /**
@@ -19,7 +20,8 @@ class Game {
     private _gameStage: PIXI.Container = new PIXI.Container();
     private _player: Player;
     private _area: Area;
-    private _log: Log;
+    private _log = new Log();
+    private _statView = new ShortStats();
 
     /**
      * Construct a new game given sprite and control information.
@@ -28,8 +30,7 @@ class Game {
      * @param controller the controller for player input
      */
     constructor(sheet: SpriteSheet, controller: Controller) {
-        this._log = new Log();
-        this._player = new Player(sheet, this._log);
+        this._player = new Player(sheet, this._log, this._statView);
         this._area = new Area(sheet);
         this._area.addEntity(new Mouse(sheet, this._log), { x: 10, y: 8 });
         this._area.addEntity(new Mouse(sheet, this._log), { x: 10, y: 2 });
@@ -54,7 +55,8 @@ class Game {
      */
     setStage(container: PIXI.Container) {
         container.addChild(this._gameStage);
-        this._log.addTo(container, 0, 10);
+        this._log.addTo(container, 0, 40);
+        this._statView.addTo(container, 10, 10);
     }
 
 

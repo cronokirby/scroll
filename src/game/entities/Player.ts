@@ -3,17 +3,27 @@ import LivingEntity from './LivingEntity';
 import Log from '../Log';
 import { Stats, getDamage } from './statistics';
 import Area from '../Area';
+import ShortStats from '../ShortStats';
 
 
 class Player extends LivingEntity {
     private _stats = { attack: 4, defense: 4 };
+    private _maxHealth = 20;
+    private _health = this._maxHealth;
 
-    constructor(sheet: SpriteSheet, private _log: Log) {
+    constructor(sheet: SpriteSheet, private _log: Log, private _statView: ShortStats) {
         super(sheet.indexSprite(0, 0));
+        this._statView.setStats(this._health, this._maxHealth);
+    }
+
+    private setStats() {
+        this._statView.setStats(this._health, this._maxHealth);
     }
 
     hit(attacking: Stats) {
         const damage = getDamage(attacking, this._stats);
+        this._health -= damage;
+        this.setStats();
         this._log.addMsg(`You take ${damage} damage`);
     }
 
