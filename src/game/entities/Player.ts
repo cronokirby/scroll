@@ -37,7 +37,7 @@ class Player extends LivingEntity {
     }
 
     isDead(): boolean {
-        return false;
+        return this._health <= 0;
     }
 
     die() {

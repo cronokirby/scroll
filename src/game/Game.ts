@@ -7,6 +7,7 @@ import Player from './entities/Player';
 import Mouse from './entities/monsters/Mouse';
 import * as Pos from './position';
 import ShortStats from './ShortStats';
+import GameOver from './GameOver';
 
 
 /**
@@ -18,6 +19,7 @@ import ShortStats from './ShortStats';
  */
 class Game {
     private _gameStage: PIXI.Container = new PIXI.Container();
+    private _gameOver: GameOver = new GameOver();
     private _player: Player;
     private _area: Area;
     private _log = new Log();
@@ -55,25 +57,38 @@ class Game {
      */
     setStage(container: PIXI.Container) {
         container.addChild(this._gameStage);
+        this._gameOver.addTo(container, 320);
+        this._gameOver.visible = false;
         this._log.addTo(container, 0, 40);
         this._statView.addTo(container, 10, 10);
     }
 
-
     private onMoveLeft() {
         this._area.movePlayer(Pos.left(this._player.pos));
+        this.checkGameOver();
     }
 
     private onMoveRight() {
         this._area.movePlayer(Pos.right(this._player.pos));
+        this.checkGameOver();
     }
 
     private onMoveUp() {
         this._area.movePlayer(Pos.up(this._player.pos));
+        this.checkGameOver();
     }
 
     private onMoveDown() {
         this._area.movePlayer(Pos.down(this._player.pos));
+        this.checkGameOver();
+    }
+
+    private checkGameOver() {
+        if (this._player.isDead()) {
+            this._player.die();
+            this._gameStage.visible = false;
+            this._gameOver.visible = true;
+        }
     }
 }
 export default Game;
