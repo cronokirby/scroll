@@ -1,13 +1,12 @@
 import * as PIXI from 'pixi.js';
 import { Control, Controller } from '../controller';
 import { SpriteSheet } from '../sprites';
-import Area from './Area';
 import Log from './Log';
 import Player from './entities/Player';
-import Mouse from './entities/monsters/Mouse';
 import * as Pos from './position';
 import ShortStats from './ShortStats';
 import GameOver from './GameOver';
+import { Floor } from './floor';
 
 
 /**
@@ -21,7 +20,7 @@ class Game {
     private _gameStage: PIXI.Container = new PIXI.Container();
     private _gameOver: GameOver = new GameOver();
     private _player: Player;
-    private _area: Area;
+    private _floor: Floor;
     private _log = new Log();
     private _statView = new ShortStats();
 
@@ -33,11 +32,8 @@ class Game {
      */
     constructor(sheet: SpriteSheet, controller: Controller) {
         this._player = new Player(sheet, this._log, this._statView);
-        this._area = new Area(sheet);
-        this._area.addEntity(new Mouse(sheet, this._log), { x: 10, y: 8 });
-        this._area.addEntity(new Mouse(sheet, this._log), { x: 10, y: 2 });
-        this._area.player = this._player;
-        this._area.addTo(this._gameStage);
+        this._floor = new Floor(sheet, this._log, this._player);
+        this._floor.addTo(this._gameStage);
         this._player.addTo(this._gameStage);
         this._gameStage.x = 320;
 
@@ -64,22 +60,22 @@ class Game {
     }
 
     private onMoveLeft() {
-        this._area.movePlayer(Pos.left(this._player.pos));
+        this._floor.movePlayer(Pos.Direction.Left);
         this.checkGameOver();
     }
 
     private onMoveRight() {
-        this._area.movePlayer(Pos.right(this._player.pos));
+        this._floor.movePlayer(Pos.Direction.Right);
         this.checkGameOver();
     }
 
     private onMoveUp() {
-        this._area.movePlayer(Pos.up(this._player.pos));
+        this._floor.movePlayer(Pos.Direction.Up);
         this.checkGameOver();
     }
 
     private onMoveDown() {
-        this._area.movePlayer(Pos.down(this._player.pos));
+        this._floor.movePlayer(Pos.Direction.Down);
         this.checkGameOver();
     }
 

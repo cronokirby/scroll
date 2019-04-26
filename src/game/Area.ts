@@ -156,6 +156,13 @@ class Area {
         return this._player.pos;
     }
 
+    /**
+     * Set the visibility of this area.
+     */
+    set visible(isVisible: boolean) {
+        this._stage.visible = isVisible;
+    }
+
 
     private move(entity: LivingEntity, player: boolean, pos: Pos.Pos) {
         if (this._grid.isWall(pos)) return;
