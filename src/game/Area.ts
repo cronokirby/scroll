@@ -71,6 +71,7 @@ class TileGrid {
     }
 }
 
+
 /**
  * Represents an Area we can explore, containing a finite grid.
  * The grid contains floors and walls, as well as different entites we
@@ -80,6 +81,7 @@ class Area {
     private _stage = new PIXI.Container();
     private _grid = new TileGrid(16, 16, this._stage);
     private _entities: LivingEntity[] = [];
+    private _player: LivingEntity;
 
     constructor(sheet: SpriteSheet) {
         const positions = [{ x: 1, y: 1 }, { x: 2, y: 4 }];
@@ -112,13 +114,16 @@ class Area {
         if (y) entity.y = y;
     }
 
-    /**
-     * Move an entity in this area, stopping for walls.
-     * 
-     * @param entity the entity to try and move
-     */
-    moveEntity(entity: LivingEntity, x: number, y: number) {
+    set player(newPlayer: LivingEntity) {
+        this._player = newPlayer;
+    }
+
+    private move(entity: LivingEntity, player: boolean, x: number, y: number) {
         if (this._grid.isWall(x, y)) return;
+        if (!player && this._player.x === x && this._player.y === y) {
+            entity.fight(this._player);
+            return;
+        }
         for (let e of this._entities) {
             if (e.x == x && e.y == y) {
                 entity.fight(e);
@@ -128,6 +133,31 @@ class Area {
         }
         entity.x = x;
         entity.y = y;
+    }
+
+    /**
+     * Try and move an entity to a new position.
+     * 
+     * @param entity the entity to move
+     */
+    moveEntity(entity: LivingEntity, x: number, y: number) {
+        this.move(entity, false, x, y);
+    }
+
+    /**
+     * Move the player to a new position.
+     * 
+     * This needs special handling in order to advance all the other entities.
+     */
+    movePlayer(x: number, y: number) {
+        this.move(this._player, true, x, y);
+        this.advance();
+    }
+
+    private advance(): void {
+        for (let e of this._entities) {
+            e.advance(this);
+        }
     }
 }
 export default Area;

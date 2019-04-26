@@ -2,6 +2,7 @@ import { SpriteSheet } from '../../sprites';
 import LivingEntity from './LivingEntity';
 import Log from '../Log';
 import { Stats, getDamage } from './statistics';
+import Area from '../Area';
 
 
 class Player extends LivingEntity {
@@ -19,6 +20,10 @@ class Player extends LivingEntity {
     fight(other: LivingEntity): void {
         this._log.addMsg('You attack!')
         other.hit(this._stats);
+    }
+
+    advance(area: Area) {
+
     }
 }
 export default Player;
