@@ -138,6 +138,14 @@ class Area {
     }
 
     /**
+     * Check whether or not a certain position has a wall.
+     * This is useful to make decisions for enemy AI.
+     */
+    isWall(x: number, y: number): boolean {
+        return this._grid.isWall(x, y);
+    }
+
+    /**
      * Try and move an entity to a new position.
      * 
      * @param entity the entity to move
