@@ -173,6 +173,14 @@ class Area {
         this._stage.visible = isVisible;
     }
 
+    getDescription(pos: Pos.Pos): string {
+        if (Pos.same(pos, this._player.pos)) return this._player.description;
+        for (let e of this._entities) {
+            if (Pos.same(e.pos, pos)) return e.description;
+        }
+        return '';
+    }
+
 
     private move(entity: LivingEntity, pos: Pos.Pos, player: boolean) {
         if (player) {

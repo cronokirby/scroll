@@ -50,6 +50,10 @@ class Log {
         if (y) this._stage.y = y;
     }
 
+    set visible(isVisible: boolean) {
+        this._stage.visible = isVisible;
+    }
+
     /**
      * Add a new message to the log.
      * 

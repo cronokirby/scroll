@@ -7,6 +7,7 @@ import * as Pos from './position';
 import ShortStats from './ShortStats';
 import GameOver from './GameOver';
 import { Floor } from './floor';
+import Describe from './Describe';
 
 
 /**
@@ -22,6 +23,7 @@ class Game {
     private _player: Player;
     private _floor: Floor;
     private _log = new Log();
+    private _description: Describe;
     private _statView = new ShortStats();
 
     /**
@@ -33,6 +35,7 @@ class Game {
     constructor(sheet: SpriteSheet, controller: Controller) {
         this._player = new Player(sheet, this._log, this._statView);
         this._floor = new Floor(sheet, this._log, this._player);
+        this._description = new Describe(sheet, this._floor);
         this._floor.addTo(this._gameStage);
         this._player.addTo(this._gameStage);
         this._gameStage.x = 320;
@@ -41,6 +44,7 @@ class Game {
         controller.onPress(Control.Right, this.onMoveRight.bind(this));
         controller.onPress(Control.Down, this.onMoveDown.bind(this));
         controller.onPress(Control.Up, this.onMoveUp.bind(this));
+        this.toggleDescription();
     }
 
     /**
@@ -56,26 +60,37 @@ class Game {
         this._gameOver.addTo(container, 320);
         this._gameOver.visible = false;
         this._log.addTo(container, 0, 40);
+        this._description.addTo(container);
+        //this._description.visible = false;
         this._statView.addTo(container, 10, 10);
     }
 
+    private toggleDescription() {
+        this._description.visible = true;
+        this._log.visible = false;
+    }
+
     private onMoveLeft() {
-        this._floor.movePlayer(Pos.Direction.Left);
+        //this._floor.movePlayer(Pos.Direction.Left);
+        this._description.moveCursor(Pos.Direction.Left);
         this.checkGameOver();
     }
 
     private onMoveRight() {
-        this._floor.movePlayer(Pos.Direction.Right);
+        //this._floor.movePlayer(Pos.Direction.Right);
+        this._description.moveCursor(Pos.Direction.Right);
         this.checkGameOver();
     }
 
     private onMoveUp() {
-        this._floor.movePlayer(Pos.Direction.Up);
+        //this._floor.movePlayer(Pos.Direction.Up);
+        this._description.moveCursor(Pos.Direction.Up);
         this.checkGameOver();
     }
 
     private onMoveDown() {
-        this._floor.movePlayer(Pos.Direction.Down);
+        this._description.moveCursor(Pos.Direction.Down);
+        //this._floor.movePlayer(Pos.Direction.Down);
         this.checkGameOver();
     }
 

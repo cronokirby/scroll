@@ -74,6 +74,10 @@ export class Floor {
         this._area.movePlayer(pos, true);
     }
 
+    getDescription(pos: Pos.Pos): string {
+        return this._area.getDescription(pos);
+    }
+
     private createArea(area: Area) {
         if (this._area) this._area.visible = false;
         this._area = area;
