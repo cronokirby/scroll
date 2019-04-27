@@ -21,11 +21,6 @@ window.addEventListener('load', () => {
 
 
 const controller = new Controller();
-controller.onPress(Control.Left, () => console.log('Left'));
-controller.onPress(Control.Right, () => console.log('Right'));
-controller.onPress(Control.Up, () => console.log('Up'));
-controller.onPress(Control.Down, () => console.log('Down'));
-
 PIXI.loader
     .add(SpriteSheet.deps)
     .load(() => {
