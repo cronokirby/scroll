@@ -4,6 +4,7 @@ import Player from "./entities/Player";
 import { SpriteSheet } from "../sprites";
 import Log from "./Log";
 import Mouse from "./entities/monsters/Mouse";
+import Leaf from "./entities/items/Leaf";
 
 
 /**
@@ -43,8 +44,9 @@ export class Floor {
         areaB.addDoors(new Door(this, areaA, {x: 15, y: 15}, {x: 0, y: 0}));
         this.createArea(areaA);
         this.createArea(areaB);
-        this._area.addEntity(new Mouse(sheet, log), { x: 10, y: 8 });
-        this._area.addEntity(new Mouse(sheet, log), { x: 10, y: 2 });
+        this._area.addCollectable(new Leaf(sheet), {x: 5, y: 5});
+        this._area.addLiving(new Mouse(sheet, log), { x: 10, y: 8 });
+        this._area.addLiving(new Mouse(sheet, log), { x: 10, y: 2 });
         this._area.player = this._player;
     }
 

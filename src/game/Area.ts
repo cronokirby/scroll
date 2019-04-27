@@ -2,6 +2,7 @@ import { Color, SpriteSheet } from '../sprites';
 import LivingEntity from './entities/LivingEntity';
 import * as Pos from './position';
 import { Door } from './floor';
+import Collectable from './entities/Collectable';
 
 
 interface Tile {
@@ -82,7 +83,8 @@ class Area {
     private _stage = new PIXI.Container();
     private _grid = new TileGrid(16, 16, this._stage);
     private _doors: Door[] = [];
-    private _entities: LivingEntity[] = [];
+    private _living: LivingEntity[] = [];
+    private _collectable: Collectable[] = [];
     private _player: LivingEntity;
     private _tookTurn: Set<LivingEntity> = new Set([]);
 
@@ -115,11 +117,28 @@ class Area {
      * 
      * @param entity the living entity to add
      */
-    addEntity(entity: LivingEntity, {x, y}: Partial<Pos.Pos>) {
-        this._entities.push(entity);
+    addLiving(entity: LivingEntity, pos?: Pos.Pos) {
+        this._living.push(entity);
         entity.addTo(this._stage);
-        if (x) entity.x = x;
-        if (y) entity.y = y;
+        if (pos) {
+            entity.x = pos.x;
+            entity.y = pos.y;
+        }
+    }
+
+    /**
+     * Add a new collectable object to the area.
+     * 
+     * @param entity the new collectable entity to add
+     * @param pos a position to add that collectable to
+     */
+    addCollectable(entity: Collectable, pos?: Pos.Pos) {
+        this._collectable.push(entity);
+        entity.addTo(this._stage);
+        if (pos) {
+            entity.x = pos.x;
+            entity.y = pos.y;
+        }
     }
 
     /**
@@ -175,7 +194,10 @@ class Area {
 
     getDescription(pos: Pos.Pos): string {
         if (Pos.same(pos, this._player.pos)) return this._player.description;
-        for (let e of this._entities) {
+        for (let e of this._living) {
+            if (Pos.same(e.pos, pos)) return e.description;
+        }
+        for (let e of this._collectable) {
             if (Pos.same(e.pos, pos)) return e.description;
         }
         return '';
@@ -195,7 +217,7 @@ class Area {
             entity.fight(this._player);
             return;
         }
-        const enemy = this._entities.find(e => Pos.same(e.pos, pos));
+        const enemy = this._living.find(e => Pos.same(e.pos, pos));
         if (enemy) {
             if (player) {
                 entity.fight(enemy);
@@ -212,7 +234,7 @@ class Area {
     }
 
     private removeDeadEntities() {
-        this._entities = this._entities.filter(e => {
+        this._living = this._living.filter(e => {
             if (e.isDead()) {
                 e.die();
                 return false;
@@ -223,7 +245,7 @@ class Area {
     }
     
     private advance(): void {
-        for (let e of this._entities) {
+        for (let e of this._living) {
             if (!this._tookTurn.has(e)) {
                 e.advance(this);
             }

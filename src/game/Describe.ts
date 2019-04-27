@@ -10,7 +10,7 @@ export const TEXT_STYLE = new PIXI.TextStyle({
     padding: 2,
     lineHeight: 20,
     wordWrap: true,
-    wordWrapWidth: 320,
+    wordWrapWidth: 300,
 });
 
 

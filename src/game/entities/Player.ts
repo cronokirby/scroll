@@ -4,6 +4,7 @@ import Log from '../Log';
 import { Stats, getDamage } from './statistics';
 import Area from '../Area';
 import ShortStats from '../ShortStats';
+import Collectable from './Collectable';
 
 
 class Player extends LivingEntity {
@@ -46,6 +47,10 @@ class Player extends LivingEntity {
 
     die() {
         this._log.addMsg('You die!');
+    }
+
+    collect(collectable: Collectable) {
+        this._log.addMsg(`You picked up a ${collectable.name}`);
     }
 }
 export default Player;
