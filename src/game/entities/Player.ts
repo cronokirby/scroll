@@ -13,7 +13,11 @@ class Player extends LivingEntity {
 
     constructor(sheet: SpriteSheet, private _log: Log, private _statView: ShortStats) {
         super(sheet.indexSprite(0, 0));
-        this._statView.setStats(this._health, this._maxHealth);
+        this.setStats();
+    }
+
+    get description(): string {
+        return 'You! The Player! The Protagonist! The Hero!';
     }
 
     private setStats() {

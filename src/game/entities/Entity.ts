@@ -12,6 +12,8 @@ abstract class Entity {
 
     constructor(protected _sprite: PIXI.Sprite) { }
 
+    abstract get description(): string;
+
     get x(): number {
         return this._x;
     }

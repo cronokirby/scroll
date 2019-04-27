@@ -16,6 +16,10 @@ class Mouse extends LivingEntity {
         this.chooseDirection();
     }
 
+    get description(): string {
+        return 'A Mouse. Pretty much harmless, but very persistent.';
+    }
+
     hit(attacking: Stats) {
         const damage = getDamage(attacking, this._stats);
         this._health -= damage;
