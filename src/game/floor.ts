@@ -76,8 +76,19 @@ export class Floor {
         this._area.movePlayer(pos, true);
     }
 
+    /**
+     * Get the description of what's at a specific position.
+     * @param pos the position to look at
+     */
     getDescription(pos: Pos.Pos): string {
         return this._area.getDescription(pos);
+    }
+
+    /**
+     * Have the player interact with whatever is under it.
+     */
+    interact() {
+        this._area.interact();
     }
 
     private createArea(area: Area) {

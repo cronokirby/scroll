@@ -48,6 +48,7 @@ class Game {
         controller.onPress(Control.Down, this.onMoveDown.bind(this));
         controller.onPress(Control.Up, this.onMoveUp.bind(this));
         controller.onPress(Control.Inspect, this.onInspect.bind(this));
+        controller.onPress(Control.Interact, this.onInteract.bind(this));
     }
 
     /**
@@ -125,6 +126,12 @@ class Game {
 
     private onInspect() {
         this.setInspecting(!this._inspecting);
+    }
+
+    private onInteract() {
+        if (!this._inspecting) {
+            this._floor.interact();
+        }
     }
 
     private checkGameOver() {

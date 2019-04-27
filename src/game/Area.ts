@@ -3,6 +3,7 @@ import LivingEntity from './entities/LivingEntity';
 import * as Pos from './position';
 import { Door } from './floor';
 import Collectable from './entities/Collectable';
+import Player from './entities/Player';
 
 
 interface Tile {
@@ -85,7 +86,7 @@ class Area {
     private _doors: Door[] = [];
     private _living: LivingEntity[] = [];
     private _collectable: Collectable[] = [];
-    private _player: LivingEntity;
+    private _player: Player;
     private _tookTurn: Set<LivingEntity> = new Set([]);
 
     constructor(private _sheet: SpriteSheet, ...walls: Pos.Pos[]) {
@@ -172,7 +173,7 @@ class Area {
         this.advance();
     }
 
-    set player(newPlayer: LivingEntity) {
+    set player(newPlayer: Player) {
         this._player = newPlayer;
     }
 
@@ -201,6 +202,21 @@ class Area {
             if (Pos.same(e.pos, pos)) return e.description;
         }
         return '';
+    }
+
+    /**
+     * Have the player interact with whatever is under it.
+     * This will make the player pick up any collectables under it.
+     */
+    interact() {
+        const foundIndex = this._collectable.findIndex(e => {
+            return Pos.same(e.pos, this._player.pos);
+        });
+        if (foundIndex >= 0) {
+            const item = this._collectable.splice(foundIndex, 1)[0];
+            item.getCollectedBy(this._player);
+            item.removeFrom(this._stage);
+        }
     }
 
 

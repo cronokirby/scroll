@@ -49,5 +49,13 @@ abstract class Entity {
     addTo(stage: PIXI.Container) {
         stage.addChild(this._sprite);
     }
+
+    /**
+     * Remove this sprite from a given stage.
+     * This is useful when removing an entity from an area.
+     */
+    removeFrom(stage: PIXI.Container) {
+        stage.removeChild(this._sprite);
+    }
 }
 export default Entity;
