@@ -27,13 +27,6 @@ class Log {
         this._text = new PIXI.Text('', TEXT_STYLE);
         this._text.x = 10
         this._stage.addChild(this._text);
-        const line = new PIXI.Graphics();
-        line.lineStyle(2, 0xAAAAAA, 1);
-        line.moveTo(0, -40);
-        line.lineTo(0, 600);
-        line.x = 310;
-        line.y = -10;
-        this._stage.addChild(line);
     }
 
     /**

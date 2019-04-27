@@ -52,8 +52,13 @@ class Describe {
         stage.addChild(this._stage);
     }
 
-    set visible(isVisible: boolean) {
-        this._stage.visible = isVisible;
+    hide() {
+        this._stage.visible = false;
+    }
+
+    show(newPos: Pos.Pos) {
+        this._stage.visible = true;
+        this.cursorPos = newPos;
     }
 }
 export default Describe;

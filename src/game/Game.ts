@@ -25,6 +25,7 @@ class Game {
     private _log = new Log();
     private _description: Describe;
     private _statView = new ShortStats();
+    private _inspecting: boolean;
 
     /**
      * Construct a new game given sprite and control information.
@@ -39,12 +40,14 @@ class Game {
         this._floor.addTo(this._gameStage);
         this._player.addTo(this._gameStage);
         this._gameStage.x = 320;
+        this.setInspecting(false);
+        this.addSidebar();
 
         controller.onPress(Control.Left, this.onMoveLeft.bind(this));
         controller.onPress(Control.Right, this.onMoveRight.bind(this));
         controller.onPress(Control.Down, this.onMoveDown.bind(this));
         controller.onPress(Control.Up, this.onMoveUp.bind(this));
-        this.toggleDescription();
+        controller.onPress(Control.Inspect, this.onInspect.bind(this));
     }
 
     /**
@@ -65,33 +68,63 @@ class Game {
         this._statView.addTo(container, 10, 10);
     }
 
-    private toggleDescription() {
-        this._description.visible = true;
-        this._log.visible = false;
+    private addSidebar() {
+        const line = new PIXI.Graphics();
+        line.lineStyle(2, 0xAAAAAA, 1);
+        line.moveTo(0, -10);
+        line.lineTo(0, 600);
+        line.x = -2;
+        this._gameStage.addChild(line)
+    }
+
+    private setInspecting(isInspecting: boolean) {
+        if (isInspecting) {
+            this._description.show(this._player.pos);
+        } else {
+            this._description.hide();
+        }
+        this._log.visible = !isInspecting;
+        this._inspecting = isInspecting;
     }
 
     private onMoveLeft() {
-        //this._floor.movePlayer(Pos.Direction.Left);
-        this._description.moveCursor(Pos.Direction.Left);
+        if (this._inspecting) {
+            this._description.moveCursor(Pos.Direction.Left);
+        } else {
+            this._floor.movePlayer(Pos.Direction.Left);
+        }
         this.checkGameOver();
     }
 
     private onMoveRight() {
-        //this._floor.movePlayer(Pos.Direction.Right);
-        this._description.moveCursor(Pos.Direction.Right);
+        if (this._inspecting) {
+            this._description.moveCursor(Pos.Direction.Right);
+        } else {
+            this._floor.movePlayer(Pos.Direction.Right);
+        }
         this.checkGameOver();
     }
 
     private onMoveUp() {
-        //this._floor.movePlayer(Pos.Direction.Up);
-        this._description.moveCursor(Pos.Direction.Up);
+        if (this._inspecting) {
+            this._description.moveCursor(Pos.Direction.Up);
+        } else {
+            this._floor.movePlayer(Pos.Direction.Up);
+        }
         this.checkGameOver();
     }
 
     private onMoveDown() {
-        this._description.moveCursor(Pos.Direction.Down);
-        //this._floor.movePlayer(Pos.Direction.Down);
+        if (this._inspecting) {
+            this._description.moveCursor(Pos.Direction.Down);
+        } else {
+            this._floor.movePlayer(Pos.Direction.Down);
+        }
         this.checkGameOver();
+    }
+
+    private onInspect() {
+        this.setInspecting(!this._inspecting);
     }
 
     private checkGameOver() {
