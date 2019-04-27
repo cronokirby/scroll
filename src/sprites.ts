@@ -7,7 +7,8 @@ import { sheet } from './assets/loader.js';
  */
 export enum Color {
     White,
-    Gray
+    Gray,
+    Green
 }
 
 function hexColor(color: Color): number {
@@ -16,6 +17,8 @@ function hexColor(color: Color): number {
             return 0xFFFFFF;
         case Color.Gray:
             return 0x81858E;
+        case Color.Green:
+            return 0x3ce847;
     }
 }
 

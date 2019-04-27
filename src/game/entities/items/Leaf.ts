@@ -1,12 +1,12 @@
 import Collectable from "../Collectable";
-import { SpriteSheet } from "../../../sprites";
+import { SpriteSheet, Color } from "../../../sprites";
 
 /**
  * A leaf that can be collected to restore health.
  */
 class Leaf extends Collectable {
     constructor(sheet: SpriteSheet) {
-        super(sheet.indexSprite(11, 15));
+        super(sheet.indexSprite(11, 15, Color.Green));
     }
 
     get name(): string {
