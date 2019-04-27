@@ -41,6 +41,19 @@ class Describe {
         this._text.text = description;
     }
 
+
+    /**
+     * Add this component to a given stage.
+     * @param stage the container to add this to
+     */
+    addTo(stage: PIXI.Container) {
+        stage.addChild(this._stage);
+    }
+
+    /**
+     * Make the cursor move in a certain direction.
+     * @param direction the direction to move the cursor in
+     */
     moveCursor(direction: Pos.Direction) {
         const {x, y} = Pos.moved(this._cursorPos, direction);
         if (x >= 0 && x < 16 && y >= 0 && y < 16) {
@@ -48,14 +61,17 @@ class Describe {
         }
     }
 
-    addTo(stage: PIXI.Container) {
-        stage.addChild(this._stage);
-    }
-
+    /**
+     * Hide this component from view.
+     */
     hide() {
         this._stage.visible = false;
     }
 
+    /**
+     * Show this component again.
+     * @param newPos the position to start the cursor at
+     */
     show(newPos: Pos.Pos) {
         this._stage.visible = true;
         this.cursorPos = newPos;
