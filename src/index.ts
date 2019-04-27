@@ -1,11 +1,10 @@
 import * as PIXI from 'pixi.js';
-import fixScaling from './fixScaling.js';
 import { Control, Controller } from './controller';
 import { SpriteSheet } from './sprites';
 import Game from './game/Game';
 
 
-fixScaling();
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 const app = new PIXI.Application({
     width: 320 + 32 * 16,
