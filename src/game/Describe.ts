@@ -3,7 +3,7 @@ import * as Pos from "./position";
 import { Floor } from "./floor";
 
 
-export const TEXT_STYLE = new PIXI.TextStyle({
+const TEXT_STYLE = new PIXI.TextStyle({
     fontFamily: 'Iosevka, Courier New, monospace',
     fill: 'white',
     fontSize: 12,
@@ -20,7 +20,7 @@ export const TEXT_STYLE = new PIXI.TextStyle({
  */
 class Describe {
     private _stage: PIXI.Container = new PIXI.Container();
-    private _text = new PIXI.Text('Hello', TEXT_STYLE);
+    private _text = new PIXI.Text('', TEXT_STYLE);
     private _cursor: PIXI.Sprite;
     private _cursorPos: Pos.Pos = {x: 0, y: 0};
 
