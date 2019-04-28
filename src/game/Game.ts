@@ -24,7 +24,7 @@ class Game {
     private _player: Player;
     private _floor: Floor;
     private _log = new Log();
-    private _inventory = new Inventory();
+    private _inventory: Inventory;
     private _description: Describe;
     private _statView = new ShortStats();
     private _inspecting: boolean;
@@ -37,6 +37,7 @@ class Game {
      * @param controller the controller for player input
      */
     constructor(sheet: SpriteSheet, controller: Controller) {
+        this._inventory = new Inventory(sheet);
         this._player = new Player(sheet, this._log, this._statView, this._inventory);
         this._floor = new Floor(sheet, this._log, this._player);
         this._description = new Describe(sheet, this._floor);
@@ -115,6 +116,7 @@ class Game {
         if (this._inspecting) {
             this._description.moveCursor(Pos.Direction.Left);
         } else if (this._inInventory) {
+            this._inventory.moveCursor(Pos.Direction.Left);
         } else {
             this._floor.movePlayer(Pos.Direction.Left);
         }
@@ -125,6 +127,7 @@ class Game {
         if (this._inspecting) {
             this._description.moveCursor(Pos.Direction.Right);
         } else if (this._inInventory) {
+            this._inventory.moveCursor(Pos.Direction.Right);
         } else {
             this._floor.movePlayer(Pos.Direction.Right);
         }
@@ -135,6 +138,7 @@ class Game {
         if (this._inspecting) {
             this._description.moveCursor(Pos.Direction.Up);
         } else if (this._inInventory) {
+            this._inventory.moveCursor(Pos.Direction.Up);
         } else {
             this._floor.movePlayer(Pos.Direction.Up);
         }
@@ -145,6 +149,7 @@ class Game {
         if (this._inspecting) {
             this._description.moveCursor(Pos.Direction.Down);
         } else if (this._inInventory) {
+            this._inventory.moveCursor(Pos.Direction.Down);
         } else {
             this._floor.movePlayer(Pos.Direction.Down);
         }

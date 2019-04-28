@@ -45,6 +45,8 @@ export class Floor {
         this.createArea(areaA);
         this.createArea(areaB);
         this._area.addCollectable(new Leaf(sheet), {x: 5, y: 5});
+        this._area.addCollectable(new Leaf(sheet), {x: 5, y: 6});
+        this._area.addCollectable(new Leaf(sheet), {x: 5, y: 7});
         this._area.addLiving(new Mouse(sheet, log), { x: 10, y: 8 });
         this._area.addLiving(new Mouse(sheet, log), { x: 10, y: 2 });
         this._area.player = this._player;
