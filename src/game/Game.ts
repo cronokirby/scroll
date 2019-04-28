@@ -28,6 +28,7 @@ class Game {
     private _description: Describe;
     private _statView = new ShortStats();
     private _inspecting: boolean;
+    private _inInventory: boolean;
 
     /**
      * Construct a new game given sprite and control information.
@@ -42,8 +43,7 @@ class Game {
         this._floor.addTo(this._gameStage);
         this._player.addTo(this._gameStage);
         this._gameStage.x = 320;
-        this.setInspecting(false);
-        this.addSidebar();
+        this.showMainView();
 
         controller.onPress(Control.Left, this.onMoveLeft.bind(this));
         controller.onPress(Control.Right, this.onMoveRight.bind(this));
@@ -51,6 +51,7 @@ class Game {
         controller.onPress(Control.Up, this.onMoveUp.bind(this));
         controller.onPress(Control.Inspect, this.onInspect.bind(this));
         controller.onPress(Control.Interact, this.onInteract.bind(this));
+        controller.onPress(Control.Inventory, this.onInventory.bind(this));
     }
 
     /**
@@ -62,7 +63,10 @@ class Game {
      * @param container the container to draw things inside
      */
     setStage(container: PIXI.Container) {
+        const line = this.sideBarLine();
+        line.x = 320;
         container.addChild(this._gameStage);
+        container.addChild(line);
         this._gameOver.addTo(container, 320);
         this._gameOver.visible = false;
         this._log.addTo(container, 0, 40);
@@ -71,28 +75,46 @@ class Game {
         this._statView.addTo(container, 10, 10);
     }
 
-    private addSidebar() {
+    private sideBarLine(): PIXI.Graphics {
         const line = new PIXI.Graphics();
         line.lineStyle(2, 0xAAAAAA, 1);
         line.moveTo(0, -10);
         line.lineTo(0, 600);
         line.x = -2;
-        this._gameStage.addChild(line)
+        return line;
     }
 
-    private setInspecting(isInspecting: boolean) {
-        if (isInspecting) {
-            this._description.show(this._player.pos);
-        } else {
-            this._description.hide();
-        }
-        this._log.visible = !isInspecting;
-        this._inspecting = isInspecting;
+    private showInspecting() {
+        this._inspecting = true;
+        this._inInventory = false;
+        this._description.show(this._player.pos);
+        this._gameStage.visible = true;
+        this._log.visible = false;
+        this._inventory.visible = false;
+    }
+
+    private showInventory() {
+        this._inspecting = false;
+        this._inInventory = true;
+        this._description.hide();
+        this._gameStage.visible = false;
+        this._log.visible = false;
+        this._inventory.visible = true;
+    }
+
+    private showMainView() {
+        this._inspecting = false;
+        this._inInventory = false;
+        this._description.hide();
+        this._gameStage.visible = true;
+        this._log.visible = true;
+        this._inventory.visible = false;
     }
 
     private onMoveLeft() {
         if (this._inspecting) {
             this._description.moveCursor(Pos.Direction.Left);
+        } else if (this._inInventory) {
         } else {
             this._floor.movePlayer(Pos.Direction.Left);
         }
@@ -102,6 +124,7 @@ class Game {
     private onMoveRight() {
         if (this._inspecting) {
             this._description.moveCursor(Pos.Direction.Right);
+        } else if (this._inInventory) {
         } else {
             this._floor.movePlayer(Pos.Direction.Right);
         }
@@ -111,6 +134,7 @@ class Game {
     private onMoveUp() {
         if (this._inspecting) {
             this._description.moveCursor(Pos.Direction.Up);
+        } else if (this._inInventory) {
         } else {
             this._floor.movePlayer(Pos.Direction.Up);
         }
@@ -120,6 +144,7 @@ class Game {
     private onMoveDown() {
         if (this._inspecting) {
             this._description.moveCursor(Pos.Direction.Down);
+        } else if (this._inInventory) {
         } else {
             this._floor.movePlayer(Pos.Direction.Down);
         }
@@ -127,18 +152,31 @@ class Game {
     }
 
     private onInspect() {
-        this.setInspecting(!this._inspecting);
+        if (this._inspecting) {
+            this.showMainView();
+        } else {
+            this.showInspecting();
+        }
     }
 
     private onInteract() {
-        if (!this._inspecting) {
+        if (!this._inspecting && !this._inInventory) {
             this._floor.interact();
+        }
+    }
+
+    private onInventory() {
+        if (this._inInventory) {
+            this.showMainView();
+        } else {
+            this.showInventory();
         }
     }
 
     private checkGameOver() {
         if (this._player.isDead()) {
             this._player.die();
+            this.showMainView();
             this._gameStage.visible = false;
             this._gameOver.visible = true;
         }

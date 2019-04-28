@@ -14,7 +14,7 @@ function makeTrigger(cb: PressCallback): Trigger {
  * 
  * This enum is used to register callbacks when this control is triggered.
  */
-export enum Control { Left, Right, Up, Down, Inspect, Interact };
+export enum Control { Left, Right, Up, Down, Inspect, Interact, Inventory };
 
 function controlFromKey(key: string): Control | null {
     switch (key) {
@@ -32,6 +32,8 @@ function controlFromKey(key: string): Control | null {
             return Control.Down;
         case 'x':
             return Control.Inspect;
+        case 'c':
+            return Control.Inventory;
         case 'Enter':
             return Control.Interact;
     }
