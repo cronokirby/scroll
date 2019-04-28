@@ -1,3 +1,5 @@
+import { GRID_SIZE } from "../dimensions";
+
 /**
  * Represents a static position on a 2d grid
  */
@@ -94,4 +96,11 @@ export function naiveNext(from: Pos, to: Pos): Pos {
     } else {
         return from;
     }
+}
+
+/**
+ * Check whether or not a position is in the standard grid size.
+ */
+export function inGrid({x, y}: Pos): boolean {
+    return x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE;
 }

@@ -56,9 +56,9 @@ class Describe {
      * @param direction the direction to move the cursor in
      */
     moveCursor(direction: Pos.Direction) {
-        const {x, y} = Pos.moved(this._cursorPos, direction);
-        if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) {
-            this.cursorPos = {x, y};
+        const pos = Pos.moved(this._cursorPos, direction);
+        if (Pos.inGrid(pos)) {
+            this.cursorPos = pos;
         }
     }
 
