@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { GRID_SIZE } from '../dimensions';
 
 
 export const TEXT_STYLE = new PIXI.TextStyle({
@@ -8,7 +9,7 @@ export const TEXT_STYLE = new PIXI.TextStyle({
     padding: 2,
     lineHeight: 20,
     wordWrap: true,
-    wordWrapWidth: 320,
+    wordWrapWidth: 310,
 });
 
 const MAX_MSGS = 18;

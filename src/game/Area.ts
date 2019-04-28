@@ -4,6 +4,7 @@ import * as Pos from './position';
 import { Door } from './floor';
 import Collectable from './entities/Collectable';
 import Player from './entities/Player';
+import { GRID_SIZE } from '../dimensions';
 
 
 interface Tile {
@@ -82,7 +83,7 @@ class TileGrid {
  */
 class Area {
     private _stage = new PIXI.Container();
-    private _grid = new TileGrid(16, 16, this._stage);
+    private _grid = new TileGrid(GRID_SIZE, GRID_SIZE, this._stage);
     private _doors: Door[] = [];
     private _living: LivingEntity[] = [];
     private _collectable: Collectable[] = [];

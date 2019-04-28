@@ -1,6 +1,7 @@
 import * as Pos from './position';
 import Collectable from './entities/Collectable';
 import { SpriteSheet } from '../sprites';
+import { GRID_SIZE, SIDE_PANEL_SIZE } from '../dimensions';
 
 
 const TEXT_STYLE = new PIXI.TextStyle({
@@ -23,9 +24,9 @@ class ItemGrid {
     private _items: Collectable[][];
 
     constructor() {
-        this._items = Array(16);
-        for (let x = 0; x < 16; ++x) {
-            this._items[x] = Array(16);
+        this._items = Array(GRID_SIZE);
+        for (let x = 0; x < GRID_SIZE; ++x) {
+            this._items[x] = Array(GRID_SIZE);
         }
     }
 
@@ -72,8 +73,8 @@ class Inventory {
         this._text.x = 10;
         this._cursor = sheet.indexSprite(8, 6);
         this._cursorStage.addChild(this._cursor);
-        this._cursorStage.x = 320;
-        this._mainStage.x = 320;
+        this._cursorStage.x = SIDE_PANEL_SIZE;
+        this._mainStage.x = SIDE_PANEL_SIZE;
         for (let y = 15; y >= 0; y--) {
             for (let x = 15; x >= 0; x--) {
                 this._free.push({x, y});
@@ -134,7 +135,7 @@ class Inventory {
      */
     moveCursor(direction: Pos.Direction) {
         const {x, y} = Pos.moved(this._cursorPos, direction);
-        if (x >= 0 && x < 16 && y >= 0 && y < 16) {
+        if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) {
             this.cursorPos = {x, y};
         }
     }

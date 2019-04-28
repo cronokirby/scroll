@@ -1,14 +1,15 @@
 import * as PIXI from 'pixi.js';
-import { Control, Controller } from './controller';
+import { Controller } from './controller';
 import { SpriteSheet } from './sprites';
+import { GRID_SIZE, SIDE_PANEL_SIZE, SPRITE_SIZE } from './dimensions';
 import Game from './game/Game';
 
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 const app = new PIXI.Application({
-    width: 320 + 32 * 16,
-    height: 32 * 16,
+    width: SIDE_PANEL_SIZE + SPRITE_SIZE * GRID_SIZE,
+    height: SPRITE_SIZE * GRID_SIZE,
     resolution: devicePixelRatio
 });
 

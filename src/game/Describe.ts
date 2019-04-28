@@ -1,6 +1,7 @@
 import { SpriteSheet } from "../sprites";
 import * as Pos from "./position";
 import { Floor } from "./floor";
+import { SIDE_PANEL_SIZE, SPRITE_SIZE, GRID_SIZE } from "../dimensions";
 
 
 const TEXT_STYLE = new PIXI.TextStyle({
@@ -35,8 +36,8 @@ class Describe {
 
     private set cursorPos(newPos: Pos.Pos) {
         this._cursorPos = newPos;
-        this._cursor.x = 320 + 32 * newPos.x;
-        this._cursor.y = 32 * newPos.y;
+        this._cursor.x = SIDE_PANEL_SIZE + SPRITE_SIZE * newPos.x;
+        this._cursor.y = SPRITE_SIZE * newPos.y;
         const description = this._floor.getDescription(newPos);
         this._text.text = description;
     }
@@ -56,7 +57,7 @@ class Describe {
      */
     moveCursor(direction: Pos.Direction) {
         const {x, y} = Pos.moved(this._cursorPos, direction);
-        if (x >= 0 && x < 16 && y >= 0 && y < 16) {
+        if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) {
             this.cursorPos = {x, y};
         }
     }

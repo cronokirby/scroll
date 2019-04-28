@@ -9,6 +9,7 @@ import GameOver from './GameOver';
 import { Floor } from './floor';
 import Describe from './Describe';
 import Inventory from './Inventory';
+import { SIDE_PANEL_SIZE } from '../dimensions';
 
 
 /**
@@ -43,7 +44,7 @@ class Game {
         this._description = new Describe(sheet, this._floor);
         this._floor.addTo(this._gameStage);
         this._player.addTo(this._gameStage);
-        this._gameStage.x = 320;
+        this._gameStage.x = SIDE_PANEL_SIZE;
         this.showMainView();
 
         controller.onPress(Control.Left, this.onMoveLeft.bind(this));
@@ -68,7 +69,7 @@ class Game {
         line.x = 320;
         container.addChild(this._gameStage);
         container.addChild(line);
-        this._gameOver.addTo(container, 320);
+        this._gameOver.addTo(container, SIDE_PANEL_SIZE);
         this._gameOver.visible = false;
         this._log.addTo(container, 0, 40);
         this._inventory.addTo(container);
