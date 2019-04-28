@@ -9,8 +9,13 @@ import Player from "./Player";
 abstract class Collectable extends Entity {
     abstract get name(): string;
 
-    getCollectedBy(player: Player) {
-        player.collect(this);
+    /**
+     * Make this item get collected. The player can refuse to collect this item,
+     * in which case this function returns false.
+     * @param player the player to collect this item
+     */
+    getCollectedBy(player: Player): boolean {
+        return player.collect(this);
     }
 }
 export default Collectable;

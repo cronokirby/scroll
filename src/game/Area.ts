@@ -212,11 +212,12 @@ class Area {
         const foundIndex = this._collectable.findIndex(e => {
             return Pos.same(e.pos, this._player.pos);
         });
-        if (foundIndex >= 0) {
-            const item = this._collectable.splice(foundIndex, 1)[0];
-            item.getCollectedBy(this._player);
+        if (foundIndex < 0) return;
+        const item = this._collectable[foundIndex];
+        if (item.getCollectedBy(this._player)) {
+            this._collectable.splice(foundIndex, 1)[0];
             item.removeFrom(this._stage);
-        }
+        };
     }
 
 

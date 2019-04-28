@@ -49,8 +49,9 @@ class Player extends LivingEntity {
         this._log.addMsg('You die!');
     }
 
-    collect(collectable: Collectable) {
+    collect(collectable: Collectable): boolean {
         this._log.addMsg(`You picked up a ${collectable.name}`);
+        return true;
     }
 }
 export default Player;
