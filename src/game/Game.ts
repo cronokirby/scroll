@@ -8,6 +8,7 @@ import ShortStats from './ShortStats';
 import GameOver from './GameOver';
 import { Floor } from './floor';
 import Describe from './Describe';
+import Inventory from './Inventory';
 
 
 /**
@@ -23,6 +24,7 @@ class Game {
     private _player: Player;
     private _floor: Floor;
     private _log = new Log();
+    private _inventory = new Inventory();
     private _description: Describe;
     private _statView = new ShortStats();
     private _inspecting: boolean;
@@ -34,7 +36,7 @@ class Game {
      * @param controller the controller for player input
      */
     constructor(sheet: SpriteSheet, controller: Controller) {
-        this._player = new Player(sheet, this._log, this._statView);
+        this._player = new Player(sheet, this._log, this._statView, this._inventory);
         this._floor = new Floor(sheet, this._log, this._player);
         this._description = new Describe(sheet, this._floor);
         this._floor.addTo(this._gameStage);
@@ -64,8 +66,8 @@ class Game {
         this._gameOver.addTo(container, 320);
         this._gameOver.visible = false;
         this._log.addTo(container, 0, 40);
+        this._inventory.addTo(container);
         this._description.addTo(container);
-        //this._description.visible = false;
         this._statView.addTo(container, 10, 10);
     }
 

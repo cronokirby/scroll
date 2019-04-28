@@ -5,6 +5,7 @@ import { Stats, getDamage } from './statistics';
 import Area from '../Area';
 import ShortStats from '../ShortStats';
 import Collectable from './Collectable';
+import Inventory from '../Inventory';
 
 
 class Player extends LivingEntity {
@@ -12,7 +13,12 @@ class Player extends LivingEntity {
     private _maxHealth = 20;
     private _health = this._maxHealth;
 
-    constructor(sheet: SpriteSheet, private _log: Log, private _statView: ShortStats) {
+    constructor(
+        sheet: SpriteSheet,
+        private _log: Log,
+        private _statView: ShortStats,
+        private _inventory: Inventory
+    ) {
         super(sheet.indexSprite(0, 0));
         this.setStats();
     }
@@ -50,7 +56,12 @@ class Player extends LivingEntity {
     }
 
     collect(collectable: Collectable): boolean {
-        this._log.addMsg(`You picked up a ${collectable.name}`);
+        if (!this._inventory.canAdd()) {
+            this._log.addMsg('Your inventory is full');
+            return false;
+        }
+        this._inventory.add(collectable);
+        this._log.addMsg(`You picked up ${collectable.name}`);
         return true;
     }
 }

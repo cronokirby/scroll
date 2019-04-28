@@ -10,7 +10,7 @@ class Leaf extends Collectable {
     }
 
     get name(): string {
-        return 'Leaf';
+        return 'a Leaf';
     }
 
     get description(): string {
