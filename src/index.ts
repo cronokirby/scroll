@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import { Controller } from './controller';
 import { SpriteSheet } from './sprites';
 import { GRID_SIZE, SIDE_PANEL_SIZE, SPRITE_SIZE } from './dimensions';
-import Game from './game/Game';
+import Game from './ecs-game/Game';
 
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -25,7 +25,6 @@ const controller = new Controller();
 PIXI.loader
     .add(SpriteSheet.deps)
     .load(() => {
-        const spriteSheet = new SpriteSheet();
-        const game = new Game(spriteSheet, controller);
+        const game = new Game(controller);
         game.setStage(app.stage);
     });
