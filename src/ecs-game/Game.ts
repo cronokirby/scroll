@@ -18,18 +18,19 @@ class Game {
     private _currentView: ViewType = ViewType.Playing;
 
     constructor(controller: Controller) {
-        this._stage.x = 320;
-        this._stage.addChild(this._gameStage);
-        this._inventory.addTo(this._stage);
-
-        const sprite = new PosSprite(indexSprite(0, 0));
-        this._world.add({ controlMarker: null, viewType: ViewType.Playing, sprite });
-        this._gameStage.addChild(sprite.sprite);
         controller.onPress(Control.Right, this.onRight.bind(this));
         controller.onPress(Control.Left, this.onLeft.bind(this));
         controller.onPress(Control.Up, this.onUp.bind(this));
         controller.onPress(Control.Down, this.onDown.bind(this));
         controller.onPress(Control.Inventory, this.onInventory.bind(this));
+
+        this._stage.x = 320;
+        this._stage.addChild(this._gameStage);
+        this._inventory.visible = false;
+        this._inventory.addTo(this._stage);
+
+        this.createPlayer();
+        this.createInventoryCursor();
     }
 
     /**
@@ -43,6 +44,26 @@ class Game {
      */
     setStage(stage: PIXI.Container) {
         stage.addChild(this._stage);
+    }
+
+    private createPlayer() {
+        const sprite = new PosSprite(indexSprite(0, 0));
+        this._gameStage.addChild(sprite.sprite);
+        this._world.add({
+            controlMarker: null,
+            viewType: ViewType.Playing,
+            sprite
+        });
+    }
+
+    private createInventoryCursor() {
+        const sprite = new PosSprite(indexSprite(8, 6));
+        this._inventory.addChild(sprite.sprite);
+        this._world.add({
+            controlMarker: null,
+            viewType: ViewType.Inventory,
+            sprite
+        });
     }
 
     private moveToInventory() {
@@ -66,10 +87,11 @@ class Game {
     }
 
     private moveSprites(direction: Pos.Direction) {
-        const controllable = baseQuery
+        const toMove = baseQuery
             .select('controlMarker', 'sprite', 'viewType')
+            .first()
             .filter(x => x.viewType === this._currentView);
-        this._world.run(controllable.forEach(x => {
+        this._world.run(toMove.forEach(x => {
             const pos = x.sprite.pos;
             const newPos = Pos.moved(pos, direction);
             if (Pos.inGrid(newPos)) {
