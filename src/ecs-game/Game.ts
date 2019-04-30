@@ -2,6 +2,8 @@ import { World } from 'micro-ecs';
 import { Control, Controller } from '../controller';
 import { indexSprite } from '../sprites';
 import { baseQuery, Model } from './model';
+import * as Pos from './position';
+import PosSprite from './components/PosSprite';
 
 /**
  * Represents an instance of the Game.
@@ -11,9 +13,9 @@ class Game {
     private _stage = new PIXI.Container();
 
     constructor(controller: Controller) {
-        const sprite = indexSprite(0, 0);
+        const sprite = new PosSprite(indexSprite(0, 0));
         this._world.add({ sprite });
-        this._stage.addChild(sprite);
+        this._stage.addChild(sprite.sprite);
         this._stage.x = 320;
         controller.onPress(Control.Right, this.onRight.bind(this));
         controller.onPress(Control.Left, this.onLeft.bind(this));
@@ -34,28 +36,30 @@ class Game {
         stage.addChild(this._stage);
     }
 
-    private onRight() {
+    private moveSprites(direction: Pos.Direction) {
         this._world.run(baseQuery.select('sprite').forEach(x => {
-            x.sprite.x += 32;
+            const pos = x.sprite.pos;
+            const newPos = Pos.moved(pos, direction);
+            if (Pos.inGrid(newPos)) {
+                x.sprite.pos = newPos;
+            }
         }));
+    }
+
+    private onRight() {
+        this.moveSprites(Pos.Direction.Right);
     }
 
     private onLeft() {
-        this._world.run(baseQuery.select('sprite').forEach(x => {
-            x.sprite.x -= 32;
-        }));
+        this.moveSprites(Pos.Direction.Left);
     }
 
     private onUp() {
-        this._world.run(baseQuery.select('sprite').forEach(x => {
-            x.sprite.y -= 32;
-        }));
+        this.moveSprites(Pos.Direction.Up);
     }
 
     private onDown() {
-        this._world.run(baseQuery.select('sprite').forEach(x => {
-            x.sprite.y += 32;
-        }));
+        this.moveSprites(Pos.Direction.Down);
     }
 }
 export default Game;
