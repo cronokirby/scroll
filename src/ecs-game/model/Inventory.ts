@@ -16,6 +16,22 @@ class Inventory {
     }
 
     /**
+     * Set the visibility of this inventory's stage.
+     */
+    set visible(isVisible: boolean) {
+        this._stage.visible = isVisible;
+    }
+
+    /**
+     * Add the elements of this inventory to a given stage.
+     * 
+     * @param stage the stage to add this to
+     */
+    addTo(stage: PIXI.Container) {
+        stage.addChild(this._stage);
+    }
+
+    /**
      * Add a simple sprite to the stage.
      * 
      * This sprite won't be considered an item occupying a slot in

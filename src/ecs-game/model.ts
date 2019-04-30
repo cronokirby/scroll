@@ -1,13 +1,20 @@
-import * as PIXI from 'pixi.js';
 import { query } from 'micro-ecs';
 import PosSprite from './components/PosSprite';
 
 
 /**
+ * Represents the type of view we might be having
+ */
+export enum ViewType { Playing, Exploring, Inventory }
+
+/**
  * Represents the possible components an entity can have.
  */
 export interface Model {
-    sprite: PosSprite;
+    // Used to indicate that this can be controlled
+    controlMarker: null,
+    viewType: ViewType,
+    sprite: PosSprite
 }
 
 /**

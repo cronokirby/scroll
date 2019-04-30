@@ -1,9 +1,10 @@
 import { World } from 'micro-ecs';
 import { Control, Controller } from '../controller';
 import { indexSprite } from '../sprites';
-import { baseQuery, Model } from './model';
+import { baseQuery, Model, ViewType } from './model';
 import * as Pos from './position';
 import PosSprite from './components/PosSprite';
+import Inventory from './model/Inventory';
 
 /**
  * Represents an instance of the Game.
@@ -11,16 +12,24 @@ import PosSprite from './components/PosSprite';
 class Game {
     private _world = new World<Model>();
     private _stage = new PIXI.Container();
+    private _gameStage = new PIXI.Container();
+    private _inventory = new Inventory();
+    // Game states
+    private _currentView: ViewType = ViewType.Playing;
 
     constructor(controller: Controller) {
-        const sprite = new PosSprite(indexSprite(0, 0));
-        this._world.add({ sprite });
-        this._stage.addChild(sprite.sprite);
         this._stage.x = 320;
+        this._stage.addChild(this._gameStage);
+        this._inventory.addTo(this._stage);
+
+        const sprite = new PosSprite(indexSprite(0, 0));
+        this._world.add({ controlMarker: null, viewType: ViewType.Playing, sprite });
+        this._gameStage.addChild(sprite.sprite);
         controller.onPress(Control.Right, this.onRight.bind(this));
         controller.onPress(Control.Left, this.onLeft.bind(this));
         controller.onPress(Control.Up, this.onUp.bind(this));
         controller.onPress(Control.Down, this.onDown.bind(this));
+        controller.onPress(Control.Inventory, this.onInventory.bind(this));
     }
 
     /**
@@ -36,8 +45,31 @@ class Game {
         stage.addChild(this._stage);
     }
 
+    private moveToInventory() {
+        this._currentView = ViewType.Inventory;
+        this._gameStage.visible = false;
+        this._inventory.visible = true;
+    }
+
+    private moveToPlaying() {
+        this._currentView = ViewType.Playing;
+        this._gameStage.visible = true;
+        this._inventory.visible = false;
+    }
+
+    private onInventory() {
+        if (this._currentView === ViewType.Inventory) {
+            this.moveToPlaying();
+        } else {
+            this.moveToInventory();
+        }
+    }
+
     private moveSprites(direction: Pos.Direction) {
-        this._world.run(baseQuery.select('sprite').forEach(x => {
+        const controllable = baseQuery
+            .select('controlMarker', 'sprite', 'viewType')
+            .filter(x => x.viewType === this._currentView);
+        this._world.run(controllable.forEach(x => {
             const pos = x.sprite.pos;
             const newPos = Pos.moved(pos, direction);
             if (Pos.inGrid(newPos)) {
