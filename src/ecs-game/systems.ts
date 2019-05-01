@@ -47,7 +47,7 @@ function moveCursor(world: GameWorld, viewType: ViewType, pos: Pos.Pos) {
 }
 
 
-const collectables = baseQuery.select('collectable', 'sprite', 'viewType');
+const collectables = baseQuery.select('collectable', 'sprite', 'name', 'viewType');
 
 function collectablesAt(pos: Pos.Pos, viewType: ViewType) {
     return collectables.filter(x => {
@@ -67,6 +67,7 @@ export function pickUpCollectables(world: GameWorld) {
         if (world.inventory.add(item.sprite)) {
             world.removeGameSprite(item.sprite.sprite);
             moveCursor(world, ViewType.Inventory, item.sprite.pos);
+            world.log.addMsg(`You picked up ${item.name}`);
             return { viewType: ViewType.Inventory };
         }
         return {};

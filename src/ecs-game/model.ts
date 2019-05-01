@@ -20,7 +20,8 @@ export interface Model {
     // Used ot indicate that this entity is a cursor
     isCursor: null,
     viewType: ViewType,
-    sprite: PosSprite
+    sprite: PosSprite,
+    name: string
 }
 
 /**

@@ -3,6 +3,7 @@ import * as PIXI from 'pixi.js';
 import { Model, ViewType } from '../model';
 import Inventory from './Inventory';
 import { SIDE_PANEL_SIZE } from '../../dimensions';
+import Log from '../Log';
 
 
 /**
@@ -15,6 +16,7 @@ import { SIDE_PANEL_SIZE } from '../../dimensions';
 class GameWorld {
     public readonly world = new World<Model>();
     public readonly inventory = new Inventory();
+    public readonly log = new Log();
     private _currentView = ViewType.Playing;
     private _stage = new PIXI.Container();
     private _gameStage = new PIXI.Container();
@@ -23,6 +25,7 @@ class GameWorld {
         this._gameStage.x = SIDE_PANEL_SIZE;
         this._stage.addChild(this._gameStage);
         this.inventory.addTo(this._stage);
+        this.log.addTo(this._stage);
         this.currentView = ViewType.Playing;
     }
 

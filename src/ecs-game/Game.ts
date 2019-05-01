@@ -21,6 +21,8 @@ class Game {
         controller.onPress(Control.Interact, this.onInteract.bind(this));
 
         this.createLeaf({ x: 1, y: 1 });
+        this.createLeaf({ x: 2, y: 1 });
+        this.createLeaf({ x: 3, y: 1 });
         this.createPlayer();
         this.createInventoryCursor();
     }
@@ -67,6 +69,7 @@ class Game {
         this._world.world.add({
             collectable: null,
             viewType: ViewType.Playing,
+            name: 'a Green Leaf',
             sprite
         });
     }
