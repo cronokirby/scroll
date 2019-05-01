@@ -1,9 +1,10 @@
 import { Control, Controller } from '../controller';
 import { indexSprite, Color } from '../sprites';
-import { baseQuery, ViewType } from './model';
+import { ViewType } from './model';
 import * as Pos from './position';
 import PosSprite from './components/PosSprite';
 import GameWorld from './model/GameWorld';
+import * as monsters from './monsters';
 import * as systems from './systems';
 
 /**
@@ -25,6 +26,7 @@ class Game {
         this.createLeaf({ x: 1, y: 1 });
         this.createLeaf({ x: 2, y: 1 });
         this.createLeaf({ x: 3, y: 1 });
+        monsters.mouse(this._world);
     }
 
     /**

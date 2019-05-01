@@ -1,11 +1,12 @@
 import { query } from 'micro-ecs';
 import PosSprite from './components/PosSprite';
+import { Fight } from './components/fight';
 
 
 /**
  * Represents the type of view we might be having
  */
-export enum ViewType { Playing = 0b1, Describing = 0b10, Inventory = 0b100}
+export enum ViewType { Playing = 0b1, Describing = 0b10, Inventory = 0b100 }
 
 /**
  * Represents the possible components an entity can have.
@@ -21,8 +22,12 @@ export interface Model {
     isCursor: null,
     viewType: ViewType,
     sprite: PosSprite,
+    // The name an entity might have
     name: string,
-    description: string
+    // The description an entity might have
+    description: string,
+    // This component allows an entity to fight
+    fight: Fight
 }
 
 /**
