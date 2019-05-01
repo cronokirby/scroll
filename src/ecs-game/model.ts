@@ -15,6 +15,10 @@ export interface Model {
     controlMarker: null,
     // Used to indicate that this entity can be collected
     collectable: null,
+    // Used to indicate that this entity is the player
+    isPlayer: null,
+    // Used ot indicate that this entity is a cursor
+    isCursor: null,
     viewType: ViewType,
     sprite: PosSprite
 }

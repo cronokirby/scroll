@@ -4,6 +4,7 @@ import { baseQuery, ViewType } from './model';
 import * as Pos from './position';
 import PosSprite from './components/PosSprite';
 import GameWorld from './model/GameWorld';
+import * as systems from './systems';
 
 /**
  * Represents an instance of the Game.
@@ -19,7 +20,7 @@ class Game {
         controller.onPress(Control.Inventory, this.onInventory.bind(this));
         controller.onPress(Control.Interact, this.onInteract.bind(this));
 
-        this.createLeaf({x: 1, y: 1});
+        this.createLeaf({ x: 1, y: 1 });
         this.createPlayer();
         this.createInventoryCursor();
     }
@@ -42,6 +43,7 @@ class Game {
         this._world.addGameSprite(sprite.sprite);
         this._world.world.add({
             controlMarker: null,
+            isPlayer: null,
             viewType: ViewType.Playing,
             sprite
         });
@@ -52,6 +54,7 @@ class Game {
         this._world.inventory.addChild(sprite.sprite);
         this._world.world.add({
             controlMarker: null,
+            isCursor: null,
             viewType: ViewType.Inventory,
             sprite
         });
@@ -68,13 +71,6 @@ class Game {
         });
     }
 
-    private controlQuery() {
-        return baseQuery
-            .select('controlMarker', 'sprite', 'viewType')
-            .first()
-            .filter(x => x.viewType === this._world.currentView);
-    }
-
     private onInventory() {
         if (this._world.currentView === ViewType.Inventory) {
             this._world.currentView = ViewType.Playing;
@@ -85,34 +81,13 @@ class Game {
 
     private onInteract() {
         if (this._world.currentView === ViewType.Playing) {
-            this._world.world.run(this.controlQuery().forEach(x => {
-                const playerPos = x.sprite.pos;
-                const collectables = baseQuery
-                    .select('collectable', 'sprite', 'viewType')
-                    .filter(x => {
-                        const rightView = x.viewType === ViewType.Playing
-                        const rightPos = Pos.same(x.sprite.pos, playerPos);
-                        return rightView && rightPos;
-                    });
-                this._world.world.run(collectables.map(x => {
-                    if (this._world.inventory.add(x.sprite)) {
-                        this._world.removeGameSprite(x.sprite.sprite);
-                        return {viewType: ViewType.Inventory};
-                    }
-                    return {};
-                }));
-            }))
+            systems.pickUpCollectables(this._world);
         }
     }
 
     private moveSprites(direction: Pos.Direction) {
-        this._world.world.run(this.controlQuery().forEach(x => {
-            const pos = x.sprite.pos;
-            const newPos = Pos.moved(pos, direction);
-            if (Pos.inGrid(newPos)) {
-                x.sprite.pos = newPos;
-            }
-        }));
+        const moveSprites = systems.moveSprites(direction, this._world.currentView);
+        this._world.world.run(moveSprites);
     }
 
     private onRight() {
