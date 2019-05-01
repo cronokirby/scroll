@@ -70,6 +70,7 @@ class Game {
             collectable: null,
             viewType: ViewType.Playing,
             name: 'a Green Leaf',
+            description: 'A refreshing Green Leaf. Chew on it to restore health.',
             sprite
         });
     }
@@ -79,6 +80,7 @@ class Game {
             this._world.currentView = ViewType.Playing;
         } else {
             this._world.currentView = ViewType.Inventory;
+            systems.setDescription(this._world, ViewType.Inventory);
         }
     }
 
@@ -91,6 +93,9 @@ class Game {
     private moveSprites(direction: Pos.Direction) {
         const moveSprites = systems.moveSprites(direction, this._world.currentView);
         this._world.world.run(moveSprites);
+        if (this._world.currentView !== ViewType.Playing) {
+            systems.setDescription(this._world, this._world.currentView);
+        }
     }
 
     private onRight() {

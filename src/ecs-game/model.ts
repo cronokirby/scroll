@@ -21,7 +21,8 @@ export interface Model {
     isCursor: null,
     viewType: ViewType,
     sprite: PosSprite,
-    name: string
+    name: string,
+    description: string
 }
 
 /**

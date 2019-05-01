@@ -1,6 +1,7 @@
 import { baseQuery, ViewType } from './model';
 import * as Pos from './position';
 import GameWorld from './model/GameWorld';
+import { World } from 'micro-ecs';
 
 
 /**
@@ -36,7 +37,7 @@ function playerPos(world: GameWorld): Pos.Pos {
 
 
 function cursor(viewType: ViewType) {
-    return baseQuery.select('isCursor', 'sprite', 'viewType')
+    return baseQuery.select('isCursor', 'sprite', 'viewType').first()
         .filter(x => x.viewType === viewType);
 }
 
@@ -71,5 +72,29 @@ export function pickUpCollectables(world: GameWorld) {
             return { viewType: ViewType.Inventory };
         }
         return {};
+    }));
+}
+
+
+const describeables = baseQuery.select('description', 'sprite', 'viewType');
+
+function descriptionAt(world: GameWorld, pos: Pos.Pos, viewType: ViewType): string {
+    const query = describeables.filter(x => {
+        const rightView = x.viewType === viewType;
+        const rightPos = Pos.same(x.sprite.pos, pos);
+        return rightView && rightPos;
+    });
+    let description = '';
+    world.world.run(query.first().forEach(item => {
+        description = item.description;
+    }));
+    return description;
+}
+
+export function setDescription(world: GameWorld, viewType: ViewType) {
+    world.description.text = '';
+    world.world.run(cursor(viewType).forEach(cursor => {
+        const description = descriptionAt(world, cursor.sprite.pos, viewType);
+        world.description.text = description;
     }));
 }

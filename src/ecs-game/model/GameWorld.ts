@@ -29,7 +29,6 @@ class GameWorld {
         this.inventory.addTo(this._stage);
         this.log.addTo(this._stage);
         this.description.addTo(this._stage);
-        this.description.text = 'Description here';
         this.currentView = ViewType.Playing;
     }
 
