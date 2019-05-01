@@ -4,6 +4,7 @@ import { Model, ViewType } from '../model';
 import Inventory from './Inventory';
 import { SIDE_PANEL_SIZE } from '../../dimensions';
 import Log from '../Log';
+import Description from '../Description';
 
 
 /**
@@ -16,6 +17,7 @@ import Log from '../Log';
 class GameWorld {
     public readonly world = new World<Model>();
     public readonly inventory = new Inventory();
+    public readonly description = new Description();
     public readonly log = new Log();
     private _currentView = ViewType.Playing;
     private _stage = new PIXI.Container();
@@ -26,6 +28,8 @@ class GameWorld {
         this._stage.addChild(this._gameStage);
         this.inventory.addTo(this._stage);
         this.log.addTo(this._stage);
+        this.description.addTo(this._stage);
+        this.description.text = 'Description here';
         this.currentView = ViewType.Playing;
     }
 
@@ -37,6 +41,8 @@ class GameWorld {
         this._currentView = newType;
         this._gameStage.visible = newType !== ViewType.Inventory;
         this.inventory.visible = newType === ViewType.Inventory;
+        this.description.visible = newType !== ViewType.Playing;
+        this.log.visible = newType === ViewType.Playing;
     }
 
     /**

@@ -25,8 +25,8 @@ class Log {
 
     constructor() {
         this._text = new PIXI.Text('', TEXT_STYLE);
+        this._text.y = 40;
         this._text.x = 10
-        this._text.y = 10;
         this._stage.addChild(this._text);
     }
 
