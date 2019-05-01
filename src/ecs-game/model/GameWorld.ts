@@ -5,6 +5,8 @@ import Inventory from './Inventory';
 import { SIDE_PANEL_SIZE } from '../../dimensions';
 import Log from '../Log';
 import Description from '../Description';
+import PosSprite from '../components/PosSprite';
+import { indexSprite } from '../../sprites';
 
 
 /**
@@ -22,14 +24,42 @@ class GameWorld {
     private _currentView = ViewType.Playing;
     private _stage = new PIXI.Container();
     private _gameStage = new PIXI.Container();
+    private _descriptionStage = new PIXI.Container();
 
     constructor() {
         this._gameStage.x = SIDE_PANEL_SIZE;
+        this._descriptionStage.x = SIDE_PANEL_SIZE;
         this._stage.addChild(this._gameStage);
+        this._stage.addChild(this._descriptionStage);
         this.inventory.addTo(this._stage);
         this.log.addTo(this._stage);
         this.description.addTo(this._stage);
         this.currentView = ViewType.Playing;
+
+        this.addInventoryCursor();
+        this.addDescriptionCursor();
+    }
+
+    private addInventoryCursor() {
+        const sprite = new PosSprite(indexSprite(8, 6));
+        this.inventory.addChild(sprite.sprite);
+        this.world.add({
+            controlMarker: null,
+            isCursor: null,
+            viewType: ViewType.Inventory,
+            sprite
+        });
+    }
+
+    private addDescriptionCursor() {
+        const sprite = new PosSprite(indexSprite(8, 6));
+        this._descriptionStage.addChild(sprite.sprite);
+        this.world.add({
+            controlMarker: null,
+            isCursor: null,
+            viewType: ViewType.Describing,
+            sprite
+        });
     }
 
     get currentView(): ViewType {
@@ -42,6 +72,7 @@ class GameWorld {
         this.inventory.visible = newType === ViewType.Inventory;
         this.description.visible = newType !== ViewType.Playing;
         this.log.visible = newType === ViewType.Playing;
+        this._descriptionStage.visible = newType === ViewType.Describing;
     }
 
     /**

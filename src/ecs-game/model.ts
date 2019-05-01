@@ -5,7 +5,7 @@ import PosSprite from './components/PosSprite';
 /**
  * Represents the type of view we might be having
  */
-export enum ViewType { Playing, Describing, Inventory }
+export enum ViewType { Playing = 0b1, Describing = 0b10, Inventory = 0b100}
 
 /**
  * Represents the possible components an entity can have.

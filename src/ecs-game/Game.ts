@@ -19,12 +19,13 @@ class Game {
         controller.onPress(Control.Down, this.onDown.bind(this));
         controller.onPress(Control.Inventory, this.onInventory.bind(this));
         controller.onPress(Control.Interact, this.onInteract.bind(this));
+        controller.onPress(Control.Inspect, this.onInspect.bind(this));
 
         this.createLeaf({ x: 1, y: 1 });
         this.createLeaf({ x: 2, y: 1 });
         this.createLeaf({ x: 3, y: 1 });
         this.createPlayer();
-        this.createInventoryCursor();
+        //this.createInventoryCursor();
     }
 
     /**
@@ -68,7 +69,7 @@ class Game {
         this._world.addGameSprite(sprite.sprite);
         this._world.world.add({
             collectable: null,
-            viewType: ViewType.Playing,
+            viewType: ViewType.Playing | ViewType.Describing,
             name: 'a Green Leaf',
             description: 'A refreshing Green Leaf. Chew on it to restore health.',
             sprite
@@ -81,6 +82,17 @@ class Game {
         } else {
             this._world.currentView = ViewType.Inventory;
             systems.setDescription(this._world, ViewType.Inventory);
+        }
+    }
+
+    private onInspect() {
+        if (this._world.currentView === ViewType.Describing) {
+            this._world.currentView = ViewType.Playing;
+        } else {
+            this._world.currentView = ViewType.Describing;
+            const playerPos = systems.playerPos(this._world);
+            systems.moveCursor(this._world, ViewType.Describing, playerPos);
+            systems.setDescription(this._world, ViewType.Describing);
         }
     }
 

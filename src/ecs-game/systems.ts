@@ -1,7 +1,6 @@
 import { baseQuery, ViewType } from './model';
 import * as Pos from './position';
 import GameWorld from './model/GameWorld';
-import { World } from 'micro-ecs';
 
 
 /**
@@ -16,7 +15,7 @@ export function moveSprites(direction: Pos.Direction, viewType: ViewType) {
     const moveable = baseQuery
         .select('controlMarker', 'sprite', 'viewType')
         .first()
-        .filter(x => x.viewType === viewType);
+        .filter(x => Boolean(x.viewType === viewType));
     return moveable.forEach(x => {
         const pos = x.sprite.pos;
         const newPos = Pos.moved(pos, direction);
@@ -26,7 +25,7 @@ export function moveSprites(direction: Pos.Direction, viewType: ViewType) {
     });
 }
 
-function playerPos(world: GameWorld): Pos.Pos {
+export function playerPos(world: GameWorld): Pos.Pos {
     const query = baseQuery.select('isPlayer', 'sprite').first();
     let pos;
     world.world.run(query.forEach(x => {
@@ -38,12 +37,12 @@ function playerPos(world: GameWorld): Pos.Pos {
 
 function cursor(viewType: ViewType) {
     return baseQuery.select('isCursor', 'sprite', 'viewType').first()
-        .filter(x => x.viewType === viewType);
+        .filter(x => Boolean(x.viewType & viewType));
 }
 
 const inventoryCursor = cursor(ViewType.Inventory);
 
-function moveCursor(world: GameWorld, viewType: ViewType, pos: Pos.Pos) {
+export function moveCursor(world: GameWorld, viewType: ViewType, pos: Pos.Pos) {
     world.world.run(cursor(viewType).forEach(x => x.sprite.pos = pos));
 }
 
@@ -52,7 +51,7 @@ const collectables = baseQuery.select('collectable', 'sprite', 'name', 'viewType
 
 function collectablesAt(pos: Pos.Pos, viewType: ViewType) {
     return collectables.filter(x => {
-        const rightView = x.viewType === viewType;
+        const rightView = Boolean(x.viewType & viewType);
         const rightPos = Pos.same(pos, x.sprite.pos);
         return rightView && rightPos;
     })
@@ -80,7 +79,7 @@ const describeables = baseQuery.select('description', 'sprite', 'viewType');
 
 function descriptionAt(world: GameWorld, pos: Pos.Pos, viewType: ViewType): string {
     const query = describeables.filter(x => {
-        const rightView = x.viewType === viewType;
+        const rightView = Boolean(x.viewType & viewType);
         const rightPos = Pos.same(x.sprite.pos, pos);
         return rightView && rightPos;
     });
