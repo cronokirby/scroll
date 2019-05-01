@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import * as Pos from '../position';
 import PosSprite from '../components/PosSprite';
+import { SIDE_PANEL_SIZE } from '../../dimensions';
 
 
 class Inventory {
@@ -13,6 +14,7 @@ class Inventory {
                 this._free.push({ x, y });
             }
         }
+        this._stage.x = SIDE_PANEL_SIZE;
     }
 
     /**

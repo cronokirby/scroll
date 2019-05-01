@@ -1,21 +1,15 @@
-import { World } from 'micro-ecs';
 import { Control, Controller } from '../controller';
 import { indexSprite } from '../sprites';
-import { baseQuery, Model, ViewType } from './model';
+import { baseQuery, ViewType } from './model';
 import * as Pos from './position';
 import PosSprite from './components/PosSprite';
-import Inventory from './model/Inventory';
+import GameWorld from './model/GameWorld';
 
 /**
  * Represents an instance of the Game.
  */
 class Game {
-    private _world = new World<Model>();
-    private _stage = new PIXI.Container();
-    private _gameStage = new PIXI.Container();
-    private _inventory = new Inventory();
-    // Game states
-    private _currentView: ViewType = ViewType.Playing;
+    private _world = new GameWorld();
 
     constructor(controller: Controller) {
         controller.onPress(Control.Right, this.onRight.bind(this));
@@ -23,11 +17,6 @@ class Game {
         controller.onPress(Control.Up, this.onUp.bind(this));
         controller.onPress(Control.Down, this.onDown.bind(this));
         controller.onPress(Control.Inventory, this.onInventory.bind(this));
-
-        this._stage.x = 320;
-        this._stage.addChild(this._gameStage);
-        this._inventory.visible = false;
-        this._inventory.addTo(this._stage);
 
         this.createPlayer();
         this.createInventoryCursor();
@@ -43,13 +32,13 @@ class Game {
      * @param stage the stage to add 
      */
     setStage(stage: PIXI.Container) {
-        stage.addChild(this._stage);
+        this._world.addTo(stage);
     }
 
     private createPlayer() {
         const sprite = new PosSprite(indexSprite(0, 0));
-        this._gameStage.addChild(sprite.sprite);
-        this._world.add({
+        this._world.addGameSprite(sprite.sprite);
+        this._world.world.add({
             controlMarker: null,
             viewType: ViewType.Playing,
             sprite
@@ -58,31 +47,19 @@ class Game {
 
     private createInventoryCursor() {
         const sprite = new PosSprite(indexSprite(8, 6));
-        this._inventory.addChild(sprite.sprite);
-        this._world.add({
+        this._world.inventory.addChild(sprite.sprite);
+        this._world.world.add({
             controlMarker: null,
             viewType: ViewType.Inventory,
             sprite
         });
     }
 
-    private moveToInventory() {
-        this._currentView = ViewType.Inventory;
-        this._gameStage.visible = false;
-        this._inventory.visible = true;
-    }
-
-    private moveToPlaying() {
-        this._currentView = ViewType.Playing;
-        this._gameStage.visible = true;
-        this._inventory.visible = false;
-    }
-
     private onInventory() {
-        if (this._currentView === ViewType.Inventory) {
-            this.moveToPlaying();
+        if (this._world.currentView === ViewType.Inventory) {
+            this._world.currentView = ViewType.Playing;
         } else {
-            this.moveToInventory();
+            this._world.currentView = ViewType.Inventory;
         }
     }
 
@@ -90,8 +67,8 @@ class Game {
         const toMove = baseQuery
             .select('controlMarker', 'sprite', 'viewType')
             .first()
-            .filter(x => x.viewType === this._currentView);
-        this._world.run(toMove.forEach(x => {
+            .filter(x => x.viewType === this._world.currentView);
+        this._world.world.run(toMove.forEach(x => {
             const pos = x.sprite.pos;
             const newPos = Pos.moved(pos, direction);
             if (Pos.inGrid(newPos)) {
