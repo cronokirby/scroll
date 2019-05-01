@@ -13,6 +13,8 @@ export enum ViewType { Playing, Exploring, Inventory }
 export interface Model {
     // Used to indicate that this can be controlled
     controlMarker: null,
+    // Used to indicate that this entity can be collected
+    collectable: null,
     viewType: ViewType,
     sprite: PosSprite
 }

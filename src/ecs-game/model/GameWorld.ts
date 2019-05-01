@@ -53,5 +53,14 @@ class GameWorld {
     addGameSprite(sprite: PIXI.Sprite) {
         this._gameStage.addChild(sprite);
     }
+
+    /**
+     * Remove a sprite from the game stage of this world.
+     * 
+     * @param sprite the sprite to remove from the stage
+     */
+    removeGameSprite(sprite: PIXI.Sprite) {
+        this._gameStage.removeChild(sprite);
+    }
 }
 export default GameWorld;

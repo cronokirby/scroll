@@ -9,8 +9,8 @@ class Inventory {
     private _free: Pos.Pos[] = [];
 
     constructor() {
-        for (let y = 0; y < 16; ++y) {
-            for (let x = 0; x < 16; ++x) {
+        for (let y = 15; y >= 0; --y) {
+            for (let x = 15; x >= 0; --x) {
                 this._free.push({ x, y });
             }
         }

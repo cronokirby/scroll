@@ -1,5 +1,5 @@
 import { Control, Controller } from '../controller';
-import { indexSprite } from '../sprites';
+import { indexSprite, Color } from '../sprites';
 import { baseQuery, ViewType } from './model';
 import * as Pos from './position';
 import PosSprite from './components/PosSprite';
@@ -17,7 +17,9 @@ class Game {
         controller.onPress(Control.Up, this.onUp.bind(this));
         controller.onPress(Control.Down, this.onDown.bind(this));
         controller.onPress(Control.Inventory, this.onInventory.bind(this));
+        controller.onPress(Control.Interact, this.onInteract.bind(this));
 
+        this.createLeaf({x: 1, y: 1});
         this.createPlayer();
         this.createInventoryCursor();
     }
@@ -55,6 +57,24 @@ class Game {
         });
     }
 
+    private createLeaf(pos: Pos.Pos) {
+        const sprite = new PosSprite(indexSprite(11, 15, Color.Green));
+        sprite.pos = pos;
+        this._world.addGameSprite(sprite.sprite);
+        this._world.world.add({
+            collectable: null,
+            viewType: ViewType.Playing,
+            sprite
+        });
+    }
+
+    private controlQuery() {
+        return baseQuery
+            .select('controlMarker', 'sprite', 'viewType')
+            .first()
+            .filter(x => x.viewType === this._world.currentView);
+    }
+
     private onInventory() {
         if (this._world.currentView === ViewType.Inventory) {
             this._world.currentView = ViewType.Playing;
@@ -63,12 +83,30 @@ class Game {
         }
     }
 
+    private onInteract() {
+        if (this._world.currentView === ViewType.Playing) {
+            this._world.world.run(this.controlQuery().forEach(x => {
+                const playerPos = x.sprite.pos;
+                const collectables = baseQuery
+                    .select('collectable', 'sprite', 'viewType')
+                    .filter(x => {
+                        const rightView = x.viewType === ViewType.Playing
+                        const rightPos = Pos.same(x.sprite.pos, playerPos);
+                        return rightView && rightPos;
+                    });
+                this._world.world.run(collectables.map(x => {
+                    if (this._world.inventory.add(x.sprite)) {
+                        this._world.removeGameSprite(x.sprite.sprite);
+                        return {viewType: ViewType.Inventory};
+                    }
+                    return {};
+                }));
+            }))
+        }
+    }
+
     private moveSprites(direction: Pos.Direction) {
-        const toMove = baseQuery
-            .select('controlMarker', 'sprite', 'viewType')
-            .first()
-            .filter(x => x.viewType === this._world.currentView);
-        this._world.world.run(toMove.forEach(x => {
+        this._world.world.run(this.controlQuery().forEach(x => {
             const pos = x.sprite.pos;
             const newPos = Pos.moved(pos, direction);
             if (Pos.inGrid(newPos)) {
