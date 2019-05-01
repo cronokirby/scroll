@@ -24,12 +24,15 @@ class GameWorld {
     private _currentView = ViewType.Playing;
     private _stage = new PIXI.Container();
     private _gameStage = new PIXI.Container();
+    private _gameStageHigh = new PIXI.Container();
     private _descriptionStage = new PIXI.Container();
 
     constructor() {
         this._gameStage.x = SIDE_PANEL_SIZE;
+        this._gameStageHigh.x = SIDE_PANEL_SIZE;
         this._descriptionStage.x = SIDE_PANEL_SIZE;
         this._stage.addChild(this._gameStage);
+        this._stage.addChild(this._gameStageHigh);
         this._stage.addChild(this._descriptionStage);
         this.inventory.addTo(this._stage);
         this.log.addTo(this._stage);
@@ -69,6 +72,7 @@ class GameWorld {
     set currentView(newType: ViewType) {
         this._currentView = newType;
         this._gameStage.visible = newType !== ViewType.Inventory;
+        this._gameStageHigh.visible = this._gameStage.visible;
         this.inventory.visible = newType === ViewType.Inventory;
         this.description.visible = newType !== ViewType.Playing;
         this.log.visible = newType === ViewType.Playing;
@@ -89,8 +93,9 @@ class GameWorld {
      * 
      * @param sprite the sprite to add
      */
-    addGameSprite(sprite: PIXI.Sprite) {
-        this._gameStage.addChild(sprite);
+    addGameSprite(sprite: PIXI.Sprite, priority = false) {
+        const stage = priority ? this._gameStageHigh : this._gameStage;
+        stage.addChild(sprite);
     }
 
     /**

@@ -21,11 +21,10 @@ class Game {
         controller.onPress(Control.Interact, this.onInteract.bind(this));
         controller.onPress(Control.Inspect, this.onInspect.bind(this));
 
+        this.createPlayer();
         this.createLeaf({ x: 1, y: 1 });
         this.createLeaf({ x: 2, y: 1 });
         this.createLeaf({ x: 3, y: 1 });
-        this.createPlayer();
-        //this.createInventoryCursor();
     }
 
     /**
@@ -43,22 +42,11 @@ class Game {
 
     private createPlayer() {
         const sprite = new PosSprite(indexSprite(0, 0));
-        this._world.addGameSprite(sprite.sprite);
+        this._world.addGameSprite(sprite.sprite, true);
         this._world.world.add({
             controlMarker: null,
             isPlayer: null,
             viewType: ViewType.Playing,
-            sprite
-        });
-    }
-
-    private createInventoryCursor() {
-        const sprite = new PosSprite(indexSprite(8, 6));
-        this._world.inventory.addChild(sprite.sprite);
-        this._world.world.add({
-            controlMarker: null,
-            isCursor: null,
-            viewType: ViewType.Inventory,
             sprite
         });
     }
