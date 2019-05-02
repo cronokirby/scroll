@@ -8,10 +8,23 @@ import * as Pos from '../game/position';
 
 
 const mouseFight: Fight = {
-    stats: { health: 6, name: 'Mouse' },
+    stats: { 
+        name: 'Mouse',
+        health: 6,
+        maxHealth: 6,
+        attack: 2,
+        defense: 2
+    },
 
     chooseAttack(): Attack {
-        return { description: 'The Mouse bites with its tiny fangs!' };
+        return {
+            description: 'The Mouse bites with its tiny fangs!',
+            attack: this.stats.attack
+        };
+    },
+    
+    describeDamage(damage: number): string {
+        return `The Mouse takes ${damage} damage`;
     }
 }
 

@@ -1,7 +1,7 @@
 import { baseQuery, ViewType } from './model';
 import * as Pos from './position';
 import GameWorld from './model/GameWorld';
-import { Fight } from './components/fight';
+import { Fight, getDamage } from './components/fight';
 
 
 /**
@@ -36,12 +36,18 @@ export function playerPos(world: GameWorld): Pos.Pos {
 }
 
 
-function fight(world: GameWorld, fightFirst: Fight, fightSecond: Fight, ambush = false) {
-    const attack = fightFirst.chooseAttack(fightSecond.stats);
+function fight(world: GameWorld, fight1: Fight, fight2: Fight, ambush = false) {
+    const attack = fight1.chooseAttack(fight2.stats);
     world.log.addMsg(attack.description);
+    const damage2 = getDamage(attack, fight2.stats);
+    fight2.stats.health -= damage2;
+    world.log.addMsg(fight2.describeDamage(damage2));
     if (ambush) return;
-    const response = fightSecond.chooseAttack(fightFirst.stats);
+    const response = fight2.chooseAttack(fight1.stats);
     world.log.addMsg(response.description);
+    const damage1 = getDamage(response, fight1.stats);
+    fight1.stats.health -= damage1;
+    world.log.addMsg(fight1.describeDamage(damage1));
 }
 
 function fightAt(world: GameWorld, fighter: Fight, pos: Pos.Pos): boolean {

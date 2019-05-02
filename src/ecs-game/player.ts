@@ -6,9 +6,23 @@ import { indexSprite } from "../sprites";
 
 
 const playerFight: Fight = {
-    stats: { health: 20, name: 'You' },
+    stats: {
+        name: 'You',
+        health: 20,
+        maxHealth: 20,
+        attack: 4,
+        defense: 4,
+    },
+
     chooseAttack(stats: Stats): Attack {
-        return { description: `You hit the ${stats.name}!` };
+        return {
+            description: `You hit the ${stats.name}!`,
+            attack: this.stats.attack
+        };
+    },
+
+    describeDamage(damage: number): string {
+        return `You take ${damage} damage`;
     }
 }
 

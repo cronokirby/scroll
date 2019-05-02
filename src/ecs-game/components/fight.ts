@@ -2,7 +2,10 @@
  * Represents an attack a monster produces.
  */
 export interface Attack {
-    description: string
+    // A string used to describe this attack
+    readonly description: string,
+    // How powerful this attack is
+    readonly attack: number
 }
 
 /**
@@ -10,8 +13,24 @@ export interface Attack {
  */
 export interface Stats {
     health: number,
+    readonly maxHealth: number,
     // e.g. You hit the Mouse
-    name: string
+    readonly name: string,
+    // How powerful this entity can attack
+    readonly attack: number,
+    // How well this entity can resist attack
+    readonly defense: number,
+}
+
+/**
+ * Calculate how much damage an attack does against an entity's stats.
+ * 
+ * @param attack the attack hitting this entity
+ * @param defense the stats of this entity
+ */
+export function getDamage(attack: Attack, defense: Stats): number {
+    const dmg = 2 * attack.attack - defense.defense;
+    return dmg < 1 ? 1 : dmg;
 }
 
 /**
@@ -24,5 +43,6 @@ export interface Stats {
 export interface Fight {
     readonly stats: Stats,
     // Choose which attack to use
-    chooseAttack(stats: Stats): Attack
+    chooseAttack(stats: Stats): Attack,
+    describeDamage(damage: number): string
 }
