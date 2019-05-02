@@ -42,7 +42,7 @@ function fight(world: GameWorld, fight1: Fight, fight2: Fight, ambush = false) {
     const damage2 = getDamage(attack, fight2.stats);
     fight2.stats.health -= damage2;
     world.log.addMsg(fight2.describeDamage(damage2));
-    if (ambush) return;
+    if (ambush || fight2.stats.health <= 0) return;
     const response = fight2.chooseAttack(fight1.stats);
     world.log.addMsg(response.description);
     const damage1 = getDamage(response, fight1.stats);
@@ -100,6 +100,17 @@ function advanceRest(world: GameWorld, playerPos: Pos.Pos, playerFight: Fight) {
         x.movement.didMove = false;
     });
     world.world.run(resetMovement);
+    removeDead(world);
+}
+
+function removeDead(world: GameWorld) {
+    const query = baseQuery
+        .select('fight', 'sprite')
+        .filter(x => x.fight.stats.health <= 0);
+    world.world.run(query.map(x => {
+        x.sprite.sprite.destroy();
+        return undefined;
+    }));
 }
 
 
