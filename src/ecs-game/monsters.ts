@@ -4,7 +4,7 @@ import PosSprite from './components/PosSprite';
 import { indexSprite } from '../sprites';
 import GameWorld from './model/GameWorld';
 import Movement from './components/Movement';
-import * as Pos from '../game/position';
+import * as Pos from './position';
 import Area from './dungeon/Area';
 
 
