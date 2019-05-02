@@ -6,15 +6,8 @@ import PosSprite from './components/PosSprite';
 import GameWorld from './model/GameWorld';
 import * as monsters from './monsters';
 import * as systems from './systems';
-import { Fight, Attack, Stats } from './components/fight';
+import { createPlayer } from './player';
 
-
-const playerFight: Fight = {
-    stats: { health: 20, name: 'You' },
-    chooseAttack(stats: Stats): Attack {
-        return { description: `You hit the ${stats.name}!` };
-    }
-}
 
 /**
  * Represents an instance of the Game.
@@ -31,7 +24,7 @@ class Game {
         controller.onPress(Control.Interact, this.onInteract.bind(this));
         controller.onPress(Control.Inspect, this.onInspect.bind(this));
 
-        this.createPlayer();
+        createPlayer(this._world);
         this.createLeaf({ x: 1, y: 1 });
         this.createLeaf({ x: 2, y: 1 });
         this.createLeaf({ x: 3, y: 1 });
@@ -49,18 +42,6 @@ class Game {
      */
     setStage(stage: PIXI.Container) {
         this._world.addTo(stage);
-    }
-
-    private createPlayer() {
-        const sprite = new PosSprite(indexSprite(0, 0));
-        this._world.addGameSprite(sprite.sprite, true);
-        this._world.world.add({
-            controlMarker: null,
-            isPlayer: null,
-            viewType: ViewType.Playing,
-            fight: playerFight,
-            sprite
-        });
     }
 
     private createLeaf(pos: Pos.Pos) {
