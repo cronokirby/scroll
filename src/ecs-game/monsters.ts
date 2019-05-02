@@ -1,5 +1,4 @@
-import { World } from 'micro-ecs';
-import { Model, ViewType } from './model';
+import { ViewType } from './model';
 import { Fight, Attack } from './components/fight';
 import PosSprite from './components/PosSprite';
 import { indexSprite } from '../sprites';

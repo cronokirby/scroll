@@ -1,7 +1,7 @@
 import { baseQuery, ViewType } from './model';
 import * as Pos from './position';
 import GameWorld from './model/GameWorld';
-import { Attack, Fight } from './components/fight';
+import { Fight } from './components/fight';
 
 
 /**
