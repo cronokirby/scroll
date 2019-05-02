@@ -68,6 +68,7 @@ export function movePlayer(world: GameWorld, direction: Pos.Direction) {
     const query = baseQuery.select('isPlayer', 'sprite', 'fight').first();
     world.world.run(query.forEach(player => {
         const moved = Pos.moved(player.sprite.pos, direction);
+        if (!Pos.inGrid(moved)) return;
         if (!fightAt(world, player.fight, moved)) {
             player.sprite.pos = moved;
         }
