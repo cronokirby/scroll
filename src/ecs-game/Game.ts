@@ -92,7 +92,6 @@ class Game {
     private moveSprites(direction: Pos.Direction) {
         if (this._world.currentView === ViewType.Playing) {
             systems.movePlayer(this._world, direction);
-            this.updatePlayerStats();
         } else {
             const moveSprites = systems.moveSprites(direction, this._world.currentView);
             this._world.world.run(moveSprites);

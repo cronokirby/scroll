@@ -10,7 +10,7 @@ import * as Pos from '../game/position';
 const mouseFight: Fight = {
     stats: { 
         name: 'Mouse',
-        health: 13,
+        health: 200,
         maxHealth: 13,
         attack: 2,
         defense: 2

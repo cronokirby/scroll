@@ -8,6 +8,7 @@ import Description from '../Description';
 import PosSprite from '../components/PosSprite';
 import { indexSprite } from '../../sprites';
 import ShortStats from './ShortStats';
+import GameOver from './GameOver';
 
 
 /**
@@ -23,6 +24,7 @@ class GameWorld {
     public readonly description = new Description();
     public readonly log = new Log();
     public readonly shortStats = new ShortStats();
+    private _gameOver = new GameOver();
     private _currentView = ViewType.Playing;
     private _stage = new PIXI.Container();
     private _gameStage = new PIXI.Container();
@@ -40,6 +42,8 @@ class GameWorld {
         this.description.addTo(this._stage);
         this.log.addTo(this._stage);
         this.shortStats.addTo(this._stage, 20, 10);
+        this._gameOver.addTo(this._stage, SIDE_PANEL_SIZE);
+        this._gameOver.visible = false;
         this.currentView = ViewType.Playing;
 
         this.addInventoryCursor();
@@ -90,6 +94,15 @@ class GameWorld {
         this.description.visible = newType !== ViewType.Playing;
         this.log.visible = newType === ViewType.Playing;
         this._descriptionStage.visible = newType === ViewType.Describing;
+    }
+
+    setGameOver() {
+        this._gameStage.visible = false;
+        this.inventory.visible = false;
+        this.description.visible = false;
+        this.log.visible = true;
+        this._descriptionStage.visible = false;
+        this._gameOver.visible = true;
     }
 
     /**

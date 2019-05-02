@@ -84,6 +84,15 @@ export function updatePlayerStats(world: GameWorld) {
     }));
 }
 
+export function playerIsDead(world: GameWorld): boolean {
+    const query = baseQuery.select('isPlayer', 'fight').first();
+    let isDead = false;
+    world.world.run(query.forEach(player => {
+        isDead = player.fight.stats.health <= 0;
+    }));
+    return isDead;
+}
+
 function advanceRest(world: GameWorld, playerPos: Pos.Pos, playerFight: Fight) {
     const query = baseQuery
         .select('movement', 'fight', 'sprite')
@@ -100,6 +109,10 @@ function advanceRest(world: GameWorld, playerPos: Pos.Pos, playerFight: Fight) {
         x.movement.didMove = false;
     });
     world.world.run(resetMovement);
+    if (playerIsDead(world)) {
+        world.setGameOver();
+    }
+    updatePlayerStats(world);
     removeDead(world);
 }
 
