@@ -9,6 +9,7 @@ import PosSprite from '../components/PosSprite';
 import { indexSprite } from '../../sprites';
 import ShortStats from './ShortStats';
 import GameOver from './GameOver';
+import Dungeon from '../dungeon/Dungeon';
 
 
 /**
@@ -20,6 +21,7 @@ import GameOver from './GameOver';
  */
 class GameWorld {
     public readonly world = new World<Model>();
+    public readonly dungeon = new Dungeon();
     public readonly inventory = new Inventory();
     public readonly description = new Description();
     public readonly log = new Log();
@@ -35,6 +37,7 @@ class GameWorld {
         this._gameStage.x = SIDE_PANEL_SIZE;
         this._gameStageHigh.x = SIDE_PANEL_SIZE;
         this._descriptionStage.x = SIDE_PANEL_SIZE;
+        this.dungeon.addTo(this._stage, SIDE_PANEL_SIZE);
         this._stage.addChild(this._gameStage);
         this._stage.addChild(this._gameStageHigh);
         this._stage.addChild(this._descriptionStage);
