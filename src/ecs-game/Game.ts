@@ -6,6 +6,15 @@ import PosSprite from './components/PosSprite';
 import GameWorld from './model/GameWorld';
 import * as monsters from './monsters';
 import * as systems from './systems';
+import { Fight } from './components/fight';
+
+
+const playerFight: Fight = {
+    stats: { health: 20 },
+    chooseAttack() {
+        return { description: 'You fight the monster!' };
+    }
+}
 
 /**
  * Represents an instance of the Game.
@@ -49,6 +58,7 @@ class Game {
             controlMarker: null,
             isPlayer: null,
             viewType: ViewType.Playing,
+            fight: playerFight,
             sprite
         });
     }
@@ -93,9 +103,11 @@ class Game {
     }
 
     private moveSprites(direction: Pos.Direction) {
-        const moveSprites = systems.moveSprites(direction, this._world.currentView);
-        this._world.world.run(moveSprites);
-        if (this._world.currentView !== ViewType.Playing) {
+        if (this._world.currentView === ViewType.Playing) {
+            systems.movePlayer(this._world, direction);
+        } else {
+            const moveSprites = systems.moveSprites(direction, this._world.currentView);
+            this._world.world.run(moveSprites);
             systems.setDescription(this._world, this._world.currentView);
         }
     }

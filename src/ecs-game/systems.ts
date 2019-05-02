@@ -1,6 +1,7 @@
 import { baseQuery, ViewType } from './model';
 import * as Pos from './position';
 import GameWorld from './model/GameWorld';
+import { Attack } from './components/fight';
 
 
 /**
@@ -32,6 +33,33 @@ export function playerPos(world: GameWorld): Pos.Pos {
         pos = x.sprite.pos;
     }))
     return pos;
+}
+
+
+function fightAt(world: GameWorld, attack: Attack, pos: Pos.Pos): boolean {
+    const query = baseQuery
+        .select('fight', 'sprite')
+        .filter(x => Pos.same(x.sprite.pos, pos))
+        .first();
+    let didFight = false;
+    world.world.run(query.forEach(x => {
+        world.log.addMsg(attack.description);
+        const response = x.fight.chooseAttack();
+        world.log.addMsg(response.description);
+        didFight = true;
+    }));
+    return didFight;
+}
+
+export function movePlayer(world: GameWorld, direction: Pos.Direction) {
+    const query = baseQuery.select('isPlayer', 'sprite', 'fight').first();
+    world.world.run(query.forEach(player => {
+        const moved = Pos.moved(player.sprite.pos, direction);
+        const attack = player.fight.chooseAttack();
+        if (!fightAt(world, attack, moved)) {
+            player.sprite.pos = moved;
+        }
+    }));
 }
 
 
