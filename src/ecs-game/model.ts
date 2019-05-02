@@ -1,6 +1,7 @@
 import { query } from 'micro-ecs';
 import PosSprite from './components/PosSprite';
 import { Fight } from './components/fight';
+import Movement from './components/Movement';
 
 
 /**
@@ -27,7 +28,9 @@ export interface Model {
     // The description an entity might have
     description: string,
     // This component allows an entity to fight
-    fight: Fight
+    fight: Fight,
+    // This component allows an entity to move
+    movement: Movement
 }
 
 /**

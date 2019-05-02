@@ -36,17 +36,23 @@ export function playerPos(world: GameWorld): Pos.Pos {
 }
 
 
-function fightAt(world: GameWorld, fight: Fight, pos: Pos.Pos): boolean {
+function fight(world: GameWorld, fightFirst: Fight, fightSecond: Fight, ambush = false) {
+    const attack = fightFirst.chooseAttack(fightSecond.stats);
+    world.log.addMsg(attack.description);
+    if (ambush) return;
+    const response = fightSecond.chooseAttack(fightFirst.stats);
+    world.log.addMsg(response.description);
+}
+
+function fightAt(world: GameWorld, fighter: Fight, pos: Pos.Pos): boolean {
     const query = baseQuery
-        .select('fight', 'sprite')
+        .select('fight', 'movement', 'sprite')
         .filter(x => Pos.same(x.sprite.pos, pos))
         .first();
     let didFight = false;
     world.world.run(query.forEach(x => {
-        const attack = fight.chooseAttack(x.fight.stats);
-        world.log.addMsg(attack.description);
-        const response = x.fight.chooseAttack(fight.stats);
-        world.log.addMsg(response.description);
+        fight(world, fighter, x.fight);
+        x.movement.didMove = true;
         didFight = true;
     }));
     return didFight;
@@ -59,7 +65,26 @@ export function movePlayer(world: GameWorld, direction: Pos.Direction) {
         if (!fightAt(world, player.fight, moved)) {
             player.sprite.pos = moved;
         }
+        advanceRest(world, player.sprite.pos, player.fight);
     }));
+}
+
+function advanceRest(world: GameWorld, playerPos: Pos.Pos, playerFight: Fight) {
+    const query = baseQuery
+        .select('movement', 'fight', 'sprite')
+        .filter(x => !x.movement.didMove);
+    world.world.run(query.forEach(x => {
+        const nextPos = x.movement.nextPos(x.sprite.pos, playerPos);
+        if (Pos.same(nextPos, playerPos)) {
+            fight(world, x.fight, playerFight, true);
+        } else {
+            x.sprite.pos = nextPos;
+        }
+    }));
+    const resetMovement = baseQuery.select('movement').forEach(x => {
+        x.movement.didMove = false;
+    });
+    world.world.run(resetMovement);
 }
 
 
