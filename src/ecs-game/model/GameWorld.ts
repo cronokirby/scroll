@@ -44,6 +44,7 @@ class GameWorld {
 
         this.addInventoryCursor();
         this.addDescriptionCursor();
+        this.createSideBarLine();
     }
 
     private addInventoryCursor() {
@@ -66,6 +67,15 @@ class GameWorld {
             viewType: ViewType.Describing,
             sprite
         });
+    }
+
+    private createSideBarLine() {
+        const line = new PIXI.Graphics();
+        line.lineStyle(2, 0xAAAAAA, 1);
+        line.moveTo(0, -10);
+        line.lineTo(0, 600);
+        line.x = SIDE_PANEL_SIZE - 2;
+        this._stage.addChild(line);
     }
 
     get currentView(): ViewType {
