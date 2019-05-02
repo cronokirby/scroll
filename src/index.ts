@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import { Controller } from './controller';
 import { SpriteSheet } from './sprites';
 import { GRID_SIZE, SIDE_PANEL_SIZE, SPRITE_SIZE } from './dimensions';
-import Game from './ecs-game/Game';
+import Game from './game/Game';
 
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
