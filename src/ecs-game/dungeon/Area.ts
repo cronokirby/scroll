@@ -60,6 +60,7 @@ class Area {
     }
 
     isWall(pos: Pos.Pos): boolean {
+        if (!Pos.inGrid(pos)) return true;
         return this._wallGrid.get(pos);
     }
 }

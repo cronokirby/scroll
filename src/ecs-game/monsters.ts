@@ -5,6 +5,7 @@ import { indexSprite } from '../sprites';
 import GameWorld from './model/GameWorld';
 import Movement from './components/Movement';
 import * as Pos from '../game/position';
+import Area from './dungeon/Area';
 
 
 const mouseFight: Fight = {
@@ -30,9 +31,9 @@ const mouseFight: Fight = {
 
 const mouseMovement: Movement = {
     didMove: false,
-    nextPos(current: Pos.Pos, player: Pos.Pos): Pos.Pos {
+    nextPos(current: Pos.Pos, player: Pos.Pos, area: Area): Pos.Pos {
         const next = Pos.moved(current, Pos.Direction.Left);
-        return Pos.inGrid(next) ? next : current;
+        return !area.isWall(next) ? next : current;
     }
 }
 
