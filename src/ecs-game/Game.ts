@@ -6,13 +6,13 @@ import PosSprite from './components/PosSprite';
 import GameWorld from './model/GameWorld';
 import * as monsters from './monsters';
 import * as systems from './systems';
-import { Fight } from './components/fight';
+import { Fight, Attack, Stats } from './components/fight';
 
 
 const playerFight: Fight = {
-    stats: { health: 20 },
-    chooseAttack() {
-        return { description: 'You fight the monster!' };
+    stats: { health: 20, name: 'You' },
+    chooseAttack(stats: Stats): Attack {
+        return { description: `You hit the ${stats.name}!` };
     }
 }
 

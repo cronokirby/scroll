@@ -6,16 +6,16 @@ import { indexSprite } from '../sprites';
 import GameWorld from './model/GameWorld';
 
 
-class MouseFight implements Fight {
-    readonly stats = { health: 6 };
+const mouseFight: Fight = {
+    stats: { health: 6, name: 'Mouse' },
 
     chooseAttack(): Attack {
-        return { description: 'The Mouse bits with its tiny fangs!' };
+        return { description: 'The Mouse bites with its tiny fangs!' };
     }
 }
 
 export function mouse(world: GameWorld) {
-    const fight = new MouseFight();
+    const fight = mouseFight;
     const sprite = new PosSprite(indexSprite(0, 4));
     sprite.pos = {x: 5, y: 5};
     world.world.add({

@@ -9,7 +9,9 @@ export interface Attack {
  * Represents the stats an entity that can fight might have.
  */
 export interface Stats {
-    health: number
+    health: number,
+    // e.g. You hit the Mouse
+    name: string
 }
 
 /**
@@ -22,5 +24,5 @@ export interface Stats {
 export interface Fight {
     readonly stats: Stats,
     // Choose which attack to use
-    chooseAttack(): Attack
+    chooseAttack(stats: Stats): Attack
 }
