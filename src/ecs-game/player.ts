@@ -39,6 +39,7 @@ export function createPlayer(world: GameWorld) {
         isPlayer: null,
         viewType: ViewType.Playing,
         fight: playerFight,
+        area: world.dungeon.currentArea,
         sprite
     });
 }

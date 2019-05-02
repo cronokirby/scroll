@@ -1,4 +1,5 @@
 import * as Pos from '../position';
+import Area from '../dungeon/Area';
 
 
 /**
@@ -14,6 +15,6 @@ import * as Pos from '../position';
  */
 interface Movement {
     didMove: boolean,
-    nextPos(current: Pos.Pos, player: Pos.Pos): Pos.Pos
+    nextPos(current: Pos.Pos, player: Pos.Pos, area: Area): Pos.Pos
 }
 export default Movement;

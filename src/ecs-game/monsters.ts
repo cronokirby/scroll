@@ -44,6 +44,7 @@ export function mouse(world: GameWorld) {
         description: 'A Tiny Mouse. Mostly harmless.',
         sprite,
         fight: mouseFight,
+        area: world.dungeon.currentArea,
         movement: mouseMovement
     });
     world.addGameSprite(sprite.sprite);

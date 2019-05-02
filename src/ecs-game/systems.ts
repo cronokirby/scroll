@@ -65,10 +65,10 @@ function fightAt(world: GameWorld, fighter: Fight, pos: Pos.Pos): boolean {
 }
 
 export function movePlayer(world: GameWorld, direction: Pos.Direction) {
-    const query = baseQuery.select('isPlayer', 'sprite', 'fight').first();
+    const query = baseQuery.select('isPlayer', 'sprite', 'area', 'fight').first();
     world.world.run(query.forEach(player => {
         const moved = Pos.moved(player.sprite.pos, direction);
-        if (!Pos.inGrid(moved)) return;
+        if (!Pos.inGrid(moved) || player.area.isWall(moved)) return;
         if (!fightAt(world, player.fight, moved)) {
             player.sprite.pos = moved;
         }
@@ -95,10 +95,10 @@ export function playerIsDead(world: GameWorld): boolean {
 
 function advanceRest(world: GameWorld, playerPos: Pos.Pos, playerFight: Fight) {
     const query = baseQuery
-        .select('movement', 'fight', 'sprite')
+        .select('movement', 'fight', 'area', 'sprite')
         .filter(x => !x.movement.didMove);
     world.world.run(query.forEach(x => {
-        const nextPos = x.movement.nextPos(x.sprite.pos, playerPos);
+        const nextPos = x.movement.nextPos(x.sprite.pos, playerPos, x.area);
         if (Pos.same(nextPos, playerPos)) {
             fight(world, x.fight, playerFight, true);
         } else {

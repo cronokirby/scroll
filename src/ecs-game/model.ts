@@ -2,6 +2,7 @@ import { query } from 'micro-ecs';
 import PosSprite from './components/PosSprite';
 import { Fight } from './components/fight';
 import Movement from './components/Movement';
+import Area from './dungeon/Area';
 
 
 /**
@@ -22,6 +23,8 @@ export interface Model {
     // Used ot indicate that this entity is a cursor
     isCursor: null,
     viewType: ViewType,
+    // The area this entity is in
+    area: Area,
     sprite: PosSprite,
     // The name an entity might have
     name: string,
