@@ -29,6 +29,8 @@ class Game {
         this.createLeaf({ x: 2, y: 1 });
         this.createLeaf({ x: 3, y: 1 });
         monsters.mouse(this._world);
+
+        this.updatePlayerStats();
     }
 
     /**
@@ -55,6 +57,10 @@ class Game {
             description: 'A refreshing Green Leaf. Chew on it to restore health.',
             sprite
         });
+    }
+
+    private updatePlayerStats() {
+        systems.updatePlayerStats(this._world);
     }
 
     private onInventory() {
@@ -86,6 +92,7 @@ class Game {
     private moveSprites(direction: Pos.Direction) {
         if (this._world.currentView === ViewType.Playing) {
             systems.movePlayer(this._world, direction);
+            this.updatePlayerStats();
         } else {
             const moveSprites = systems.moveSprites(direction, this._world.currentView);
             this._world.world.run(moveSprites);

@@ -7,6 +7,7 @@ import Log from '../Log';
 import Description from '../Description';
 import PosSprite from '../components/PosSprite';
 import { indexSprite } from '../../sprites';
+import ShortStats from './ShortStats';
 
 
 /**
@@ -21,6 +22,7 @@ class GameWorld {
     public readonly inventory = new Inventory();
     public readonly description = new Description();
     public readonly log = new Log();
+    public readonly shortStats = new ShortStats();
     private _currentView = ViewType.Playing;
     private _stage = new PIXI.Container();
     private _gameStage = new PIXI.Container();
@@ -35,8 +37,9 @@ class GameWorld {
         this._stage.addChild(this._gameStageHigh);
         this._stage.addChild(this._descriptionStage);
         this.inventory.addTo(this._stage);
-        this.log.addTo(this._stage);
         this.description.addTo(this._stage);
+        this.log.addTo(this._stage);
+        this.shortStats.addTo(this._stage, 20, 10);
         this.currentView = ViewType.Playing;
 
         this.addInventoryCursor();

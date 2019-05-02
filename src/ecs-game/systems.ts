@@ -75,6 +75,14 @@ export function movePlayer(world: GameWorld, direction: Pos.Direction) {
     }));
 }
 
+export function updatePlayerStats(world: GameWorld) {
+    const query = baseQuery.select('isPlayer', 'fight').first();
+    world.world.run(query.forEach(player => {
+        const {health, maxHealth} = player.fight.stats;
+        world.shortStats.setStats(health, maxHealth);
+    }));
+}
+
 function advanceRest(world: GameWorld, playerPos: Pos.Pos, playerFight: Fight) {
     const query = baseQuery
         .select('movement', 'fight', 'sprite')
@@ -98,8 +106,6 @@ function cursor(viewType: ViewType) {
     return baseQuery.select('isCursor', 'sprite', 'viewType').first()
         .filter(x => Boolean(x.viewType & viewType));
 }
-
-const inventoryCursor = cursor(ViewType.Inventory);
 
 export function moveCursor(world: GameWorld, viewType: ViewType, pos: Pos.Pos) {
     world.world.run(cursor(viewType).forEach(x => x.sprite.pos = pos));
