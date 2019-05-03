@@ -3,6 +3,7 @@ import PosSprite from './components/PosSprite';
 import { Fight } from './components/fight';
 import Movement from './components/Movement';
 import Area from './dungeon/Area';
+import Consume from './components/Consume';
 
 
 /**
@@ -30,6 +31,8 @@ export interface Model {
     name: string,
     // The description an entity might have
     description: string,
+    // This allows us to consume an item
+    consume: Consume,
     // This component allows an entity to fight
     fight: Fight,
     // This component allows an entity to move

@@ -55,6 +55,7 @@ class Game {
             viewType: ViewType.Playing | ViewType.Describing,
             name: 'a Green Leaf',
             description: 'A refreshing Green Leaf. Chew on it to restore health.',
+            consume: { restoreHealth: 5 },
             sprite
         });
     }
@@ -86,6 +87,9 @@ class Game {
     private onInteract() {
         if (this._world.currentView === ViewType.Playing) {
             systems.pickUpCollectables(this._world);
+        } else if (this._world.currentView === ViewType.Inventory) {
+            systems.consume(this._world);
+            systems.updatePlayerStats(this._world);
         }
     }
 

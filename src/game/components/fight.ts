@@ -33,6 +33,10 @@ export function getDamage(attack: Attack, defense: Stats): number {
     return dmg < 1 ? 1 : dmg;
 }
 
+export function heal(stats: Stats, amount: number) {
+    stats.health = Math.min(stats.health + amount, stats.maxHealth);
+}
+
 /**
  * Represents a component that we can fight.
  * 

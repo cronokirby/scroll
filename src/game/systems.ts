@@ -1,7 +1,9 @@
 import { baseQuery, ViewType } from './model';
 import * as Pos from './position';
 import GameWorld from './model/GameWorld';
-import { Fight, getDamage } from './components/fight';
+import { Fight, getDamage, heal } from './components/fight';
+import { World } from 'micro-ecs';
+import Consume from './components/Consume';
 
 
 /**
@@ -79,7 +81,7 @@ export function movePlayer(world: GameWorld, direction: Pos.Direction) {
 export function updatePlayerStats(world: GameWorld) {
     const query = baseQuery.select('isPlayer', 'fight').first();
     world.world.run(query.forEach(player => {
-        const {health, maxHealth} = player.fight.stats;
+        const { health, maxHealth } = player.fight.stats;
         world.shortStats.setStats(health, maxHealth);
     }));
 }
@@ -185,5 +187,37 @@ export function setDescription(world: GameWorld, viewType: ViewType) {
     world.world.run(cursor(viewType).forEach(cursor => {
         const description = descriptionAt(world, cursor.sprite.pos, viewType);
         world.description.text = description;
+    }));
+}
+
+
+function consumeAt(world: GameWorld, pos: Pos.Pos): Consume | undefined {
+    const shouldConsume = x => {
+        const inInventory = x.viewType === ViewType.Inventory;
+        return inInventory && Pos.same(x.sprite.pos, pos);
+    };
+    const query = baseQuery
+        .select('viewType', 'sprite', 'name', 'consume')
+        .filter(shouldConsume)
+        .first();
+    let consume: Consume | undefined;
+    world.world.run(query.map(x => {
+        world.log.addMsg(`You consume ${x.name}`);
+        consume = x.consume
+        x.sprite.sprite.destroy();
+        return undefined;
+    }));
+    return consume;
+}
+
+export function consume(world: GameWorld) {
+    const selectPlayer = baseQuery.select('isPlayer', 'fight').first();
+    world.world.run(cursor(ViewType.Inventory).forEach(cursor => {
+        const consume = consumeAt(world, cursor.sprite.pos);
+        if (!consume) return;
+        world.world.run(selectPlayer.forEach(player => {
+            world.log.addMsg(`You gain ${consume.restoreHealth} health`);
+            heal(player.fight.stats, consume.restoreHealth);
+        }))
     }));
 }
