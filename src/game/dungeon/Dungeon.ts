@@ -20,9 +20,8 @@ class Dungeon {
      * 
      * @param stage the stage to add this to
      */
-    addTo(stage: PIXI.Container, x?: number) {
+    addTo(stage: PIXI.Container) {
         stage.addChild(this._stage);
-        if (x) this._stage.x = x;
     }
 
     get currentArea(): Area {

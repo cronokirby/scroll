@@ -37,7 +37,7 @@ class GameWorld {
         this._gameStage.x = SIDE_PANEL_SIZE;
         this._gameStageHigh.x = SIDE_PANEL_SIZE;
         this._descriptionStage.x = SIDE_PANEL_SIZE;
-        this.dungeon.addTo(this._stage, SIDE_PANEL_SIZE);
+        this.dungeon.addTo(this._gameStage);
         this._stage.addChild(this._gameStage);
         this._stage.addChild(this._gameStageHigh);
         this._stage.addChild(this._descriptionStage);
