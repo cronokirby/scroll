@@ -5,7 +5,8 @@ import { SIDE_PANEL_SIZE } from '../../dimensions';
 
 
 class Inventory {
-    private _stage = new PIXI.Container();
+    private _topStage = new PIXI.Container();
+    private _bottomStage = new PIXI.Container();
     private _free: Pos.Pos[] = [];
 
     constructor() {
@@ -14,14 +15,16 @@ class Inventory {
                 this._free.push({ x, y });
             }
         }
-        this._stage.x = SIDE_PANEL_SIZE;
+        this._topStage.x = SIDE_PANEL_SIZE;
+        this._bottomStage.x = SIDE_PANEL_SIZE;
     }
 
     /**
      * Set the visibility of this inventory's stage.
      */
     set visible(isVisible: boolean) {
-        this._stage.visible = isVisible;
+        this._topStage.visible = isVisible;
+        this._bottomStage.visible = isVisible;
     }
 
     /**
@@ -30,7 +33,8 @@ class Inventory {
      * @param stage the stage to add this to
      */
     addTo(stage: PIXI.Container) {
-        stage.addChild(this._stage);
+        stage.addChild(this._bottomStage);
+        stage.addChild(this._topStage);
     }
 
     /**
@@ -42,7 +46,7 @@ class Inventory {
      * @param sprite the sprite to add to this inventory's stage
      */
     addChild(sprite: PIXI.Sprite) {
-        this._stage.addChild(sprite);
+        this._topStage.addChild(sprite);
     }
 
     /**
@@ -53,7 +57,7 @@ class Inventory {
     add(sprite: PosSprite): boolean {
         const pos = this._free.pop();
         if (!pos) return false;
-        this._stage.addChild(sprite.sprite);
+        this._bottomStage.addChild(sprite.sprite);
         sprite.pos = pos;
         return true;
     }
