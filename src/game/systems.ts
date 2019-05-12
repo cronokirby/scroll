@@ -2,7 +2,6 @@ import { baseQuery, ViewType } from './model';
 import * as Pos from './position';
 import GameWorld from './model/GameWorld';
 import { Fight, getDamage, heal } from './components/fight';
-import { World } from 'micro-ecs';
 import Consume from './components/Consume';
 
 
