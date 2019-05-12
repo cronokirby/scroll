@@ -9,7 +9,7 @@ import Area from './dungeon/Area';
 
 
 const mouseFight: Fight = {
-    stats: { 
+    stats: {
         name: 'Mouse',
         health: 200,
         maxHealth: 13,
@@ -23,16 +23,33 @@ const mouseFight: Fight = {
             attack: this.stats.attack
         };
     },
-    
+
     describeDamage(damage: number): string {
         return `The Mouse takes ${damage} damage`;
     }
 }
 
-const mouseMovement: Movement = {
-    didMove: false,
+// We use a class here since we more state than usual.
+class MouseMovement implements Movement {
+    didMove = false;
+    private _direction = Pos.Direction.Left;
+
+    // Maybe change direction based on random input
+    private changeDirection(change = 0.2) {
+        if (Math.random() < change) {
+            const dir = Pos.DIRECTIONS[Math.floor(Math.random() * 4)];
+            this._direction = dir;
+        }
+    }
+
     nextPos(current: Pos.Pos, player: Pos.Pos, area: Area): Pos.Pos {
-        const next = Pos.moved(current, Pos.Direction.Left);
+        let next: Pos.Pos;
+        if (Pos.distance(current, player) <= 3) {
+            next = Pos.naiveNext(current, player);
+        } else {
+            this.changeDirection();
+            next = Pos.moved(current, this._direction);
+        }
         return !area.isWall(next) ? next : current;
     }
 }
@@ -46,7 +63,7 @@ export function mouse(world: GameWorld) {
         sprite,
         fight: mouseFight,
         area: world.dungeon.currentArea,
-        movement: mouseMovement
+        movement: new MouseMovement()
     });
     world.addGameSprite(sprite.sprite);
 }
