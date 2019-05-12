@@ -37,7 +37,7 @@ class Area {
     private _stage = new PIXI.Container();
     private _wallGrid = new Grid<boolean>(() => false);
 
-    constructor() {
+    constructor(private readonly _id: number) {
         for (let x = 0; x < GRID_SIZE; ++x) {
             const sprite1 = new PosSprite(indexSprite(0, 8, Color.Gray));
             const sprite2 = new PosSprite(indexSprite(0, 8, Color.Gray));
@@ -59,9 +59,26 @@ class Area {
         stage.addChild(this._stage);
     }
 
+    /**
+     * Check if there's a wall at a given position.
+     * 
+     * @param pos the position to check
+     */
     isWall(pos: Pos.Pos): boolean {
         if (!Pos.inGrid(pos)) return true;
         return this._wallGrid.get(pos);
+    }
+
+    /**
+     * Check whether or not this area is the same as another area.
+     * 
+     * This is useful to only advance entities in the same area as another,
+     * for example.
+     * 
+     * @param that the other area
+     */
+    isSame(that: Area) {
+        return this._id === that._id;
     }
 }
 export default Area;

@@ -11,7 +11,7 @@ class Dungeon {
     private _currentArea: Area;
 
     constructor() {
-        this._currentArea = new Area();
+        this._currentArea = new Area(0);
         this._currentArea.addTo(this._stage);
     }
 

@@ -3,6 +3,7 @@ import * as Pos from './position';
 import GameWorld from './model/GameWorld';
 import { Fight, getDamage, heal } from './components/fight';
 import Consume from './components/Consume';
+import Area from './dungeon/Area';
 
 
 /**
@@ -51,10 +52,10 @@ function fight(world: GameWorld, fight1: Fight, fight2: Fight, ambush = false) {
     world.log.addMsg(fight1.describeDamage(damage1));
 }
 
-function fightAt(world: GameWorld, fighter: Fight, pos: Pos.Pos): boolean {
+function fightAt(world: GameWorld, fighter: Fight, pos: Pos.Pos, area: Area): boolean {
     const query = baseQuery
-        .select('fight', 'movement', 'sprite')
-        .filter(x => Pos.same(x.sprite.pos, pos))
+        .select('fight', 'area', 'movement', 'sprite')
+        .filter(x => area.isSame(x.area) && Pos.same(x.sprite.pos, pos))
         .first();
     let didFight = false;
     world.world.run(query.forEach(x => {
@@ -70,10 +71,10 @@ export function movePlayer(world: GameWorld, direction: Pos.Direction) {
     world.world.run(query.forEach(player => {
         const moved = Pos.moved(player.sprite.pos, direction);
         if (!Pos.inGrid(moved) || player.area.isWall(moved)) return;
-        if (!fightAt(world, player.fight, moved)) {
+        if (!fightAt(world, player.fight, moved, player.area)) {
             player.sprite.pos = moved;
         }
-        advanceRest(world, player.sprite.pos, player.fight);
+        advanceRest(world, player.sprite.pos, player.fight, player.area);
     }));
 }
 
@@ -94,10 +95,10 @@ export function playerIsDead(world: GameWorld): boolean {
     return isDead;
 }
 
-function advanceRest(world: GameWorld, playerPos: Pos.Pos, playerFight: Fight) {
+function advanceRest(world: GameWorld, playerPos: Pos.Pos, playerFight: Fight, playerArea: Area) {
     const query = baseQuery
         .select('movement', 'fight', 'area', 'sprite')
-        .filter(x => !x.movement.didMove);
+        .filter(x => playerArea.isSame(x.area) && !x.movement.didMove);
     world.world.run(query.forEach(x => {
         const nextPos = x.movement.nextPos(x.sprite.pos, playerPos, x.area);
         if (Pos.same(nextPos, playerPos)) {
