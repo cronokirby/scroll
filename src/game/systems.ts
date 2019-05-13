@@ -96,7 +96,11 @@ export function movePlayer(world: GameWorld, direction: Pos.Direction) {
             world.dungeon.moveTo(destination.areaID);
             player.area = world.dungeon.currentArea;
             player.sprite.pos = destination.position;
-            return {area: world.dungeon.currentArea};
+            const area = world.dungeon.currentArea;
+            updateAreaVisibility(world, area);
+            // This is necessary since the player isn't in the new area yet
+            player.sprite.sprite.visible = true;
+            return { area };
         }
         if (!fightAt(world, player.fight, moved, player.area)) {
             player.sprite.pos = moved;
@@ -156,6 +160,16 @@ function removeDead(world: GameWorld) {
     }));
 }
 
+// Make so that only sprites in the current area are visible
+function updateAreaVisibility(world: GameWorld, area: Area) {
+    const query = baseQuery
+        .select('sprite', 'viewType', 'area')
+        .filter(x => Boolean(x.viewType & ViewType.Playing));
+    world.world.run(query.forEach(x => {
+        x.sprite.sprite.visible = area.isSame(x.area);
+    }))
+}
+
 
 function cursor(viewType: ViewType) {
     return baseQuery.select('isCursor', 'sprite', 'viewType').first()
@@ -203,7 +217,7 @@ function descriptionAt(world: GameWorld, area: Area, pos: Pos.Pos, viewType: Vie
     const query = describeables.filter(x => {
         const rightView = Boolean(x.viewType & viewType);
         const rightPos = Pos.same(x.sprite.pos, pos);
-        const rightArea = area.isSame(x.area);
+        const rightArea = viewType === ViewType.Inventory || area.isSame(x.area);
         return rightArea && rightView && rightPos;
     });
     let description = '';
