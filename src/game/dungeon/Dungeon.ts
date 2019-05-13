@@ -1,4 +1,4 @@
-import Area from "./Area";
+import { Area, AreaID } from "./area";
 import GameWorld from "../model/GameWorld";
 import { door } from "../entities/doors";
 
@@ -10,22 +10,22 @@ import { door } from "../entities/doors";
  */
 class Dungeon {
     private _stage = new PIXI.Container();
-    private _areas: Map<number, Area> = new Map();
-    private _currentArea: number;
+    private _areas: Map<string, Area> = new Map();
+    private _currentArea: AreaID;
 
     constructor(private readonly _world: GameWorld) {
     }
 
-    private createArea(id: number) {
+    private createArea(id: AreaID) {
         const area = new Area(id);
-        this._areas.set(id, area);
+        this._areas.set(id.key, area);
         // TODO: Move this logic into area generation
-        if (id === 0) {
+        if (id.isSame(AreaID.FIRST)) {
             const destination = {
-                areaID: 1,
-                position: {x: 3, y: 3} 
+                areaID: id.next(1),
+                position: { x: 3, y: 3 }
             }
-            door(this._world, {x: 3, y: 5}, destination);
+            door(this._world, { x: 3, y: 5 }, destination);
         }
     }
 
@@ -42,7 +42,7 @@ class Dungeon {
     get currentArea(): Area {
         // Getting is always safe, since whenever we add an area,
         // we're sure that it's in the map
-        return this._areas.get(this._currentArea) as Area;
+        return this._areas.get(this._currentArea.key) as Area;
     }
 
     /**
@@ -53,9 +53,9 @@ class Dungeon {
      * 
      * @param newArea the ID of the new area to move to
      */
-    moveTo(newArea: number) {
+    moveTo(newArea: AreaID) {
         this._currentArea = newArea;
-        if (!this._areas.has(newArea)) {
+        if (!this._areas.has(newArea.key)) {
             this.createArea(newArea);
         }
     }

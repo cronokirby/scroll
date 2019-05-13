@@ -5,7 +5,7 @@ import { indexSprite } from '../../sprites';
 import GameWorld from '../model/GameWorld';
 import Movement from '../components/Movement';
 import * as Pos from '../position';
-import Area from '../dungeon/Area';
+import Area from '../dungeon/area';
 
 
 const mouseFight: Fight = {

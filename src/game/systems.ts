@@ -3,7 +3,7 @@ import * as Pos from './position';
 import GameWorld from './model/GameWorld';
 import { Fight, getDamage, heal } from './components/fight';
 import Consume from './components/Consume';
-import Area from './dungeon/Area';
+import Area from './dungeon/area';
 import Destination from './components/Destination';
 
 

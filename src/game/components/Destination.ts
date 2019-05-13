@@ -1,4 +1,5 @@
 import { Pos } from "../position";
+import { AreaID } from "../dungeon/area";
 
 /**
  * Represents a destination in the dungeon.
@@ -10,7 +11,7 @@ interface Destination {
     /**
      * The area that this destination leads to
      */
-    readonly areaID: number;
+    readonly areaID: AreaID;
     /**
      * The position this destination leads to
      */

@@ -1,5 +1,5 @@
 import * as Pos from '../position';
-import Area from '../dungeon/Area';
+import Area from '../dungeon/area';
 
 
 /**

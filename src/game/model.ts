@@ -2,7 +2,7 @@ import { query } from 'micro-ecs';
 import PosSprite from './components/PosSprite';
 import { Fight } from './components/fight';
 import Movement from './components/Movement';
-import Area from './dungeon/Area';
+import Area from './dungeon/area';
 import Consume from './components/Consume';
 import Destination from './components/Destination';
 

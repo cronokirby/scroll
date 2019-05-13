@@ -10,6 +10,7 @@ import { indexSprite } from '../../sprites';
 import ShortStats from './ShortStats';
 import GameOver from './GameOver';
 import Dungeon from '../dungeon/Dungeon';
+import { AreaID } from '../dungeon/area';
 
 
 /**
@@ -37,7 +38,7 @@ class GameWorld {
         this._gameStage.x = SIDE_PANEL_SIZE;
         this._gameStageHigh.x = SIDE_PANEL_SIZE;
         this._descriptionStage.x = SIDE_PANEL_SIZE;
-        this.dungeon.moveTo(0);
+        this.dungeon.moveTo(AreaID.FIRST);
         this.dungeon.addTo(this._gameStage);
         this._stage.addChild(this._gameStage);
         this._stage.addChild(this._gameStageHigh);

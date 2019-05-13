@@ -5,6 +5,67 @@ import PosSprite from '../components/PosSprite';
 import * as Pos from '../position';
 
 
+/**
+ * Represents a unique ID for an Area.
+ * 
+ * Note that this is a completely immutable class. Generating new IDs
+ * comes with no side-effects.
+ * 
+ * This class exists in order to easily ensure that the IDs we use to
+ * identify different Areas stay unique. Outside of this file, this class
+ * shouldn't be interacted with that much, even though its methods are publics.
+ * When comparing Areas, the comparison is done via this class, but a method exists
+ * on Area to do so. Generating new Area IDs is also something that
+ * only needs to be done in this file.
+ */
+export class AreaID {
+    /**
+     * This should be the first ID used for an Area, and all other
+     * IDs should be generated either directly from this one, or from descendants
+     * of this one.
+     */
+    static readonly FIRST = new AreaID('0');
+
+    private constructor(private readonly _id: string) { }
+
+    /**
+     * Get a string representation of this Area ID.
+     * 
+     * This is safe to be used as a unique key, e.g. in HashMaps.
+     */
+    get key(): string {
+        return this._id;
+    }
+
+    /**
+     * Check whether or not this AreaID is the same as another.
+     * 
+     * @param that the other area id to compare to
+     */
+    isSame(that: AreaID): boolean {
+        return this._id === that._id;
+    }
+
+    /**
+     * Construct a new Area ID given a sub ID.
+     * 
+     * Given 2 distinct Area IDs, calling next with any number will still be distinct.
+     * Calling next on the same base area id with distinct numbers
+     * will yield distinct Area IDs
+     * 
+     * This is useful when constructing new IDs based on a root one.
+     * For example, when constructing the ids of rooms next to a starting room,
+     * we want to make sure that IDs are unique, which is why we make sure to tie
+     * the newly generated IDs back to an original area ID.
+     * 
+     * @param id the ID to add on to this area ID
+     */
+    next(id: number): AreaID {
+        return new AreaID(this._id + id);
+    }
+}
+
+
 enum Tile { Wall, Door, Free };
 
 class Grid<T> {
@@ -20,11 +81,11 @@ class Grid<T> {
         }
     }
 
-    get({x, y}: Pos.Pos) {
+    get({ x, y }: Pos.Pos) {
         return this._data[x][y];
     }
 
-    set({x, y}: Pos.Pos, val: T) {
+    set({ x, y }: Pos.Pos, val: T) {
         this._data[x][y] = val;
     }
 }
@@ -35,11 +96,11 @@ class Grid<T> {
  * This contains tile elements, and allows us to query to know whether
  * or not we can move to certain tiles.
  */
-class Area {
+export class Area {
     private _stage = new PIXI.Container();
     private _wallGrid = new Grid<Tile>(() => Tile.Free);
 
-    constructor(private readonly _id: number) {
+    constructor(private readonly _id: AreaID) {
         for (let x = 0; x < GRID_SIZE; ++x) {
             const sprite1 = new PosSprite(indexSprite(0, 8, Color.Gray));
             const sprite2 = new PosSprite(indexSprite(0, 8, Color.Gray));
@@ -47,8 +108,8 @@ class Area {
             sprite2.pos = { x, y: 15 };
             this._stage.addChild(sprite1.sprite);
             this._stage.addChild(sprite2.sprite);
-            this._wallGrid.set({x, y: 0}, Tile.Door);
-            this._wallGrid.set({x, y: 15}, Tile.Door);
+            this._wallGrid.set({ x, y: 0 }, Tile.Door);
+            this._wallGrid.set({ x, y: 15 }, Tile.Door);
         }
     }
 
@@ -98,7 +159,6 @@ class Area {
      * @param that the other area
      */
     isSame(that: Area) {
-        return this._id === that._id;
+        return this._id.isSame(that._id);
     }
 }
-export default Area;
