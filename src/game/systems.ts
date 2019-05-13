@@ -4,6 +4,7 @@ import GameWorld from './model/GameWorld';
 import { Fight, getDamage, heal } from './components/fight';
 import Consume from './components/Consume';
 import Area from './dungeon/Area';
+import Destination from './components/Destination';
 
 
 /**
@@ -66,15 +67,33 @@ function fightAt(world: GameWorld, fighter: Fight, pos: Pos.Pos, area: Area): bo
     return didFight;
 }
 
+function doorAt(world: GameWorld, area: Area, pos: Pos.Pos): Destination | undefined {
+    const query = baseQuery
+        .select('area', 'destination', 'sprite')
+        .filter(x => area.isSame(x.area) && Pos.same(x.sprite.pos, pos))
+        .first();
+    let destination: Destination | undefined = undefined;
+    world.world.run(query.forEach(x => destination = x.destination));
+    return destination;
+}
+
 export function movePlayer(world: GameWorld, direction: Pos.Direction) {
     const query = baseQuery.select('isPlayer', 'sprite', 'area', 'fight').first();
-    world.world.run(query.forEach(player => {
+    world.world.run(query.map(player => {
         const moved = Pos.moved(player.sprite.pos, direction);
         if (!Pos.inGrid(moved) || player.area.isWall(moved)) return;
+        const destination = doorAt(world, player.area, moved);
+        if (destination) {
+            world.dungeon.moveTo(destination.areaID);
+            player.area = world.dungeon.currentArea;
+            player.sprite.pos = destination.position;
+            return {area: world.dungeon.currentArea};
+        }
         if (!fightAt(world, player.fight, moved, player.area)) {
             player.sprite.pos = moved;
         }
         advanceRest(world, player.sprite.pos, player.fight, player.area);
+        return {};
     }));
 }
 

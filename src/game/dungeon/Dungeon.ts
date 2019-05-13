@@ -23,9 +23,9 @@ class Dungeon {
         if (id === 0) {
             const destination = {
                 areaID: 1,
-                position: {x: 10, y: 10} 
+                position: {x: 3, y: 3} 
             }
-            door(this._world, {x: 10, y: 10}, destination);
+            door(this._world, {x: 4, y: 1}, destination);
         }
     }
 
@@ -54,10 +54,10 @@ class Dungeon {
      * @param newArea the ID of the new area to move to
      */
     moveTo(newArea: number) {
+        this._currentArea = newArea;
         if (!this._areas.has(newArea)) {
             this.createArea(newArea);
         }
-        this._currentArea = newArea;
     }
 }
 export default Dungeon;
