@@ -44,7 +44,7 @@ class Dungeon {
      * @param newArea the ID of the new area to move to
      */
     moveTo(newArea: number) {
-        if (this._areas.has(newArea)) {
+        if (!this._areas.has(newArea)) {
             this.createArea(newArea);
         }
         this._currentArea = newArea;
