@@ -4,6 +4,7 @@ import { Fight } from './components/fight';
 import Movement from './components/Movement';
 import Area from './dungeon/Area';
 import Consume from './components/Consume';
+import Destination from './components/Destination';
 
 
 /**
@@ -36,7 +37,9 @@ export interface Model {
     // This component allows an entity to fight
     fight: Fight,
     // This component allows an entity to move
-    movement: Movement
+    movement: Movement,
+    // This component allows an entity to have a destination
+    destination: Destination
 }
 
 /**

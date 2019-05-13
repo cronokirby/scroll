@@ -11,7 +11,7 @@ import Area from './dungeon/Area';
 const mouseFight: Fight = {
     stats: {
         name: 'Mouse',
-        health: 200,
+        health: 13,
         maxHealth: 13,
         attack: 2,
         defense: 2

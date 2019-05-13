@@ -1,4 +1,6 @@
 import Area from "./Area";
+import GameWorld from "../model/GameWorld";
+import { door } from "../doors";
 
 /**
  * Represents a dungeon we can explore, filled with many areas.
@@ -11,13 +13,20 @@ class Dungeon {
     private _areas: Map<number, Area> = new Map();
     private _currentArea: number;
 
-    constructor() {
-        this.moveTo(0);
-        this.currentArea.addTo(this._stage);
+    constructor(private readonly _world: GameWorld) {
     }
 
     private createArea(id: number) {
-        this._areas.set(id, new Area(id));
+        const area = new Area(id);
+        this._areas.set(id, area);
+        // TODO: Move this logic into area generation
+        if (id === 0) {
+            const destination = {
+                areaID: 1,
+                position: {x: 10, y: 10} 
+            }
+            door(this._world, {x: 10, y: 10}, destination);
+        }
     }
 
     /**
@@ -26,6 +35,7 @@ class Dungeon {
      * @param stage the stage to add this to
      */
     addTo(stage: PIXI.Container) {
+        this.currentArea.addTo(this._stage);
         stage.addChild(this._stage);
     }
 
