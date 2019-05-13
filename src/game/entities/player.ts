@@ -1,8 +1,8 @@
-import GameWorld from "./model/GameWorld";
-import { Fight, Attack, Stats } from './components/fight';
-import { ViewType } from "./model";
-import PosSprite from "./components/PosSprite";
-import { indexSprite } from "../sprites";
+import GameWorld from "../model/GameWorld";
+import { Fight, Attack, Stats } from '../components/fight';
+import { ViewType } from "../model";
+import PosSprite from "../components/PosSprite";
+import { indexSprite } from "../../sprites";
 
 
 const playerFight: Fight = {

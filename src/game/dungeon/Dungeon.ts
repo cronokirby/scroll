@@ -1,6 +1,6 @@
 import Area from "./Area";
 import GameWorld from "../model/GameWorld";
-import { door } from "../doors";
+import { door } from "../entities/doors";
 
 /**
  * Represents a dungeon we can explore, filled with many areas.

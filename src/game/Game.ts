@@ -4,9 +4,9 @@ import { ViewType } from './model';
 import * as Pos from './position';
 import PosSprite from './components/PosSprite';
 import GameWorld from './model/GameWorld';
-import * as monsters from './monsters';
+import * as monsters from './entities/monsters';
 import * as systems from './systems';
-import { createPlayer } from './player';
+import { createPlayer } from './entities/player';
 
 
 /**

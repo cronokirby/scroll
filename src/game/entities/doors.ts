@@ -1,9 +1,9 @@
-import GameWorld from "./model/GameWorld";
-import Destination from "./components/Destination";
-import { ViewType } from "./model";
-import PosSprite from "./components/PosSprite";
-import { indexSprite, Color } from "../sprites";
-import { Pos } from "./position";
+import GameWorld from "../model/GameWorld";
+import Destination from "../components/Destination";
+import { ViewType } from "../model";
+import PosSprite from "../components/PosSprite";
+import { indexSprite, Color } from "../../sprites";
+import { Pos } from "../position";
 
 /**
  * Create a new door, linking to a given destination.
