@@ -25,7 +25,7 @@ class Dungeon {
                 areaID: 1,
                 position: {x: 3, y: 3} 
             }
-            door(this._world, {x: 4, y: 1}, destination);
+            door(this._world, {x: 3, y: 5}, destination);
         }
     }
 

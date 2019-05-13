@@ -5,6 +5,8 @@ import PosSprite from '../components/PosSprite';
 import * as Pos from '../position';
 
 
+enum Tile { Wall, Door, Free };
+
 class Grid<T> {
     private _data: T[][];
 
@@ -35,7 +37,7 @@ class Grid<T> {
  */
 class Area {
     private _stage = new PIXI.Container();
-    private _wallGrid = new Grid<boolean>(() => false);
+    private _wallGrid = new Grid<Tile>(() => Tile.Free);
 
     constructor(private readonly _id: number) {
         for (let x = 0; x < GRID_SIZE; ++x) {
@@ -45,8 +47,8 @@ class Area {
             sprite2.pos = { x, y: 15 };
             this._stage.addChild(sprite1.sprite);
             this._stage.addChild(sprite2.sprite);
-            this._wallGrid.set({x, y: 0}, true);
-            this._wallGrid.set({x, y: 15}, true);
+            this._wallGrid.set({x, y: 0}, Tile.Door);
+            this._wallGrid.set({x, y: 15}, Tile.Door);
         }
     }
 
@@ -59,6 +61,10 @@ class Area {
         stage.addChild(this._stage);
     }
 
+    setDoor(pos: Pos.Pos) {
+        this._wallGrid.set(pos, Tile.Door);
+    }
+
     /**
      * Check if there's a wall at a given position.
      * 
@@ -66,7 +72,21 @@ class Area {
      */
     isWall(pos: Pos.Pos): boolean {
         if (!Pos.inGrid(pos)) return true;
-        return this._wallGrid.get(pos);
+        return this._wallGrid.get(pos) === Tile.Wall;
+    }
+
+    /**
+     * Check if there's a wall or a door at a given position.
+     * 
+     * This is useful in addition to isWall, since enemies
+     * aren't able to walk over doors.
+     * 
+     * @param pos the position to check
+     */
+    isHard(pos: Pos.Pos): boolean {
+        if (!Pos.inGrid(pos)) return true;
+        const tile = this._wallGrid.get(pos);
+        return tile === Tile.Wall || tile === Tile.Door;
     }
 
     /**

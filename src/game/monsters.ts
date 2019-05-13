@@ -50,7 +50,7 @@ class MouseMovement implements Movement {
             this.changeDirection();
             next = Pos.moved(current, this._direction);
         }
-        return !area.isWall(next) ? next : current;
+        return !area.isHard(next) ? next : current;
     }
 }
 

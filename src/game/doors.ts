@@ -15,12 +15,14 @@ import { Pos } from "./position";
 export function door(world: GameWorld, pos: Pos, destination: Destination) {
     const sprite = new PosSprite(indexSprite(12, 8, Color.Gray));
     sprite.pos = pos;
+    const area = world.dungeon.currentArea;
     world.world.add({
         viewType: ViewType.Describing | ViewType.Playing,
         description: 'A Door leading to another room of the dungeon',
         sprite,
-        area: world.dungeon.currentArea,
+        area,
         destination
     });
+    area.setDoor(pos);
     world.addGameSprite(sprite.sprite);
 }
