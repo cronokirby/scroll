@@ -8,11 +8,16 @@ import Area from "./Area";
  */
 class Dungeon {
     private _stage = new PIXI.Container();
-    private _currentArea: Area;
+    private _areas: Map<number, Area> = new Map();
+    private _currentArea: number;
 
     constructor() {
-        this._currentArea = new Area(0);
-        this._currentArea.addTo(this._stage);
+        this.moveTo(0);
+        this.currentArea.addTo(this._stage);
+    }
+
+    private createArea(id: number) {
+        this._areas.set(id, new Area(id));
     }
 
     /**
@@ -25,7 +30,24 @@ class Dungeon {
     }
 
     get currentArea(): Area {
-        return this._currentArea;
+        // Getting is always safe, since whenever we add an area,
+        // we're sure that it's in the map
+        return this._areas.get(this._currentArea) as Area;
+    }
+
+    /**
+     * Move the current area to a different place.
+     * 
+     * This is useful to allow for doors, or portals, that move
+     * the player between different areas.
+     * 
+     * @param newArea the ID of the new area to move to
+     */
+    moveTo(newArea: number) {
+        if (this._areas.has(newArea)) {
+            this.createArea(newArea);
+        }
+        this._currentArea = newArea;
     }
 }
 export default Dungeon;
