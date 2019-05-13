@@ -53,6 +53,7 @@ class Game {
         this._world.world.add({
             collectable: null,
             viewType: ViewType.Playing | ViewType.Describing,
+            area: this._world.dungeon.currentArea,
             name: 'a Green Leaf',
             description: 'A refreshing Green Leaf. Chew on it to restore health.',
             consume: { restoreHealth: 5 },

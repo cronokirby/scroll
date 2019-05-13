@@ -38,6 +38,15 @@ export function playerPos(world: GameWorld): Pos.Pos {
     return pos;
 }
 
+export function playerArea(world: GameWorld): Area {
+    const query = baseQuery.select('isPlayer', 'area').first();
+    let area;
+    world.world.run(query.forEach(x => {
+        area = x.area;
+    }))
+    return area;
+}
+
 
 function fight(world: GameWorld, fight1: Fight, fight2: Fight, ambush = false) {
     const attack = fight1.chooseAttack(fight2.stats);
@@ -158,13 +167,14 @@ export function moveCursor(world: GameWorld, viewType: ViewType, pos: Pos.Pos) {
 }
 
 
-const collectables = baseQuery.select('collectable', 'sprite', 'name', 'viewType');
+const collectables = baseQuery.select('collectable', 'sprite', 'area', 'name', 'viewType');
 
-function collectablesAt(pos: Pos.Pos, viewType: ViewType) {
+function collectablesAt(area: Area, pos: Pos.Pos, viewType: ViewType) {
     return collectables.filter(x => {
         const rightView = Boolean(x.viewType & viewType);
         const rightPos = Pos.same(pos, x.sprite.pos);
-        return rightView && rightPos;
+        const rightArea = area.isSame(x.area);
+        return rightArea && rightView && rightPos;
     })
 }
 
@@ -174,7 +184,8 @@ function collectablesAt(pos: Pos.Pos, viewType: ViewType) {
  */
 export function pickUpCollectables(world: GameWorld) {
     const pos = playerPos(world);
-    world.world.run(collectablesAt(pos, ViewType.Playing).map(item => {
+    const area = playerArea(world);
+    world.world.run(collectablesAt(area, pos, ViewType.Playing).map(item => {
         if (world.inventory.add(item.sprite)) {
             world.removeGameSprite(item.sprite.sprite);
             moveCursor(world, ViewType.Inventory, item.sprite.pos);
@@ -186,13 +197,14 @@ export function pickUpCollectables(world: GameWorld) {
 }
 
 
-const describeables = baseQuery.select('description', 'sprite', 'viewType');
+const describeables = baseQuery.select('description', 'sprite', 'area', 'viewType');
 
-function descriptionAt(world: GameWorld, pos: Pos.Pos, viewType: ViewType): string {
+function descriptionAt(world: GameWorld, area: Area, pos: Pos.Pos, viewType: ViewType): string {
     const query = describeables.filter(x => {
         const rightView = Boolean(x.viewType & viewType);
         const rightPos = Pos.same(x.sprite.pos, pos);
-        return rightView && rightPos;
+        const rightArea = area.isSame(x.area);
+        return rightArea && rightView && rightPos;
     });
     let description = '';
     world.world.run(query.first().forEach(item => {
@@ -203,8 +215,9 @@ function descriptionAt(world: GameWorld, pos: Pos.Pos, viewType: ViewType): stri
 
 export function setDescription(world: GameWorld, viewType: ViewType) {
     world.description.text = '';
+    const area = playerArea(world);
     world.world.run(cursor(viewType).forEach(cursor => {
-        const description = descriptionAt(world, cursor.sprite.pos, viewType);
+        const description = descriptionAt(world, area, cursor.sprite.pos, viewType);
         world.description.text = description;
     }));
 }
