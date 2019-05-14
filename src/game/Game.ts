@@ -25,11 +25,6 @@ class Game {
         controller.onPress(Control.Inspect, this.onInspect.bind(this));
 
         createPlayer(this._world);
-        this.createLeaf({ x: 1, y: 1 });
-        this.createLeaf({ x: 2, y: 1 });
-        this.createLeaf({ x: 3, y: 1 });
-        monsters.mouse(this._world);
-
         this.updatePlayerStats();
     }
 
