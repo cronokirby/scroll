@@ -102,14 +102,18 @@ export class Area {
     private _stage = new PIXI.Container();
     private _wallGrid = new Grid<Tile>(() => Tile.Free);
 
-    constructor(private readonly _id: AreaID, private readonly _world: GameWorld) {
+    constructor(private readonly _id: AreaID, private readonly _world: GameWorld, parent?: AreaID) {
+        console.log('parent', parent);
         for (let i = 0; i < GRID_SIZE; ++i) {
             this.createWall({ x: i, y: 0 });
             this.createWall({ x: i, y: 15 });
             this.createWall({ x: 0, y: i });
             this.createWall({ x: 15, y: i });
         }
-        this.createDoor({ x: 5, y: 5 }, { x: 4, y: 4 }, 1);
+        this.createDoor({ x: 5, y: 5 }, { x: 4, y: 4 }, this._id.next(1));
+        if (parent) {
+            this.createDoor({x: 4, y: 4}, {x: 5, y: 5}, parent);
+        }
     }
 
     private createWall(pos: Pos.Pos) {
@@ -119,8 +123,8 @@ export class Area {
         this._wallGrid.set(pos, Tile.Wall);
     }
 
-    private createDoor(pos: Pos.Pos, to: Pos.Pos, sub: number) {
-        const destination = { areaID: this._id.next(sub), position: to };
+    private createDoor(pos: Pos.Pos, to: Pos.Pos, areaID: AreaID) {
+        const destination = { areaID, position: to };
         this._wallGrid.set(pos, Tile.Door);
         door(this._world, this, pos, destination);
     }
@@ -132,10 +136,6 @@ export class Area {
      */
     addTo(stage: PIXI.Container) {
         stage.addChild(this._stage);
-    }
-
-    setDoor(pos: Pos.Pos) {
-        this._wallGrid.set(pos, Tile.Door);
     }
 
     /**

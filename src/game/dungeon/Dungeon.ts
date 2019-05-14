@@ -16,7 +16,8 @@ class Dungeon {
     }
 
     private createArea(id: AreaID) {
-        const area = new Area(id, this._world);
+        const parent = id.isSame(AreaID.FIRST) ? undefined : this._currentArea;
+        const area = new Area(id, this._world, parent);
         this._areas.set(id.key, area);
     }
 
@@ -45,10 +46,10 @@ class Dungeon {
      * @param newArea the ID of the new area to move to
      */
     moveTo(newArea: AreaID) {
-        this._currentArea = newArea;
         if (!this._areas.has(newArea.key)) {
             this.createArea(newArea);
         }
+        this._currentArea = newArea;
     }
 }
 export default Dungeon;

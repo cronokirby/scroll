@@ -23,6 +23,5 @@ export function door(world: GameWorld, area: Area, pos: Pos, destination: Destin
         area,
         destination
     });
-    area.setDoor(pos);
     world.addGameSprite(sprite.sprite);
 }
