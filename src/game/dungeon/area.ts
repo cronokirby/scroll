@@ -103,7 +103,6 @@ export class Area {
     private _wallGrid = new Grid<Tile>(() => Tile.Free);
 
     constructor(private readonly _id: AreaID, private readonly _world: GameWorld, parent?: AreaID) {
-        console.log('parent', parent);
         for (let i = 0; i < GRID_SIZE; ++i) {
             this.createWall({ x: i, y: 0 });
             this.createWall({ x: i, y: 15 });
