@@ -204,6 +204,14 @@ export class Area {
         stage.addChild(this._stage);
     }
 
+    /**
+     * Change the visibility of this area.
+     */
+    set visible(newVisible: boolean) {
+        this._stage.visible = newVisible;
+    }
+
+
     exitLink(area: AreaID): Link | undefined {
         return this._exits.get(area.key);
     }
