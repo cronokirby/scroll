@@ -1,6 +1,5 @@
 import { Area, AreaID } from "./area";
 import GameWorld from "../model/GameWorld";
-import { door } from "../entities/doors";
 
 /**
  * Represents a dungeon we can explore, filled with many areas.
@@ -17,16 +16,8 @@ class Dungeon {
     }
 
     private createArea(id: AreaID) {
-        const area = new Area(id);
+        const area = new Area(id, this._world);
         this._areas.set(id.key, area);
-        // TODO: Move this logic into area generation
-        if (id.isSame(AreaID.FIRST)) {
-            const destination = {
-                areaID: id.next(1),
-                position: { x: 3, y: 3 }
-            }
-            door(this._world, { x: 3, y: 5 }, destination);
-        }
     }
 
     /**

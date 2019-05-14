@@ -4,6 +4,7 @@ import { ViewType } from "../model";
 import PosSprite from "../components/PosSprite";
 import { indexSprite, Color } from "../../sprites";
 import { Pos } from "../position";
+import { Area } from "../dungeon/area";
 
 /**
  * Create a new door, linking to a given destination.
@@ -12,10 +13,9 @@ import { Pos } from "../position";
  * 
  * @param world the world to create the door in
  */
-export function door(world: GameWorld, pos: Pos, destination: Destination) {
+export function door(world: GameWorld, area: Area, pos: Pos, destination: Destination) {
     const sprite = new PosSprite(indexSprite(12, 8, Color.Gray));
     sprite.pos = pos;
-    const area = world.dungeon.currentArea;
     world.world.add({
         viewType: ViewType.Describing | ViewType.Playing,
         description: 'A Door leading to another room of the dungeon',

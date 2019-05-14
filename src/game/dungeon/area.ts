@@ -3,6 +3,8 @@ import { GRID_SIZE } from '../../dimensions';
 import { indexSprite, Color } from '../../sprites';
 import PosSprite from '../components/PosSprite';
 import * as Pos from '../position';
+import GameWorld from '../model/GameWorld';
+import { door } from '../entities/doors';
 
 
 /**
@@ -100,20 +102,27 @@ export class Area {
     private _stage = new PIXI.Container();
     private _wallGrid = new Grid<Tile>(() => Tile.Free);
 
-    constructor(private readonly _id: AreaID) {
+    constructor(private readonly _id: AreaID, private readonly _world: GameWorld) {
         for (let i = 0; i < GRID_SIZE; ++i) {
-            this.createWall({x: i, y: 0});
-            this.createWall({x: i, y: 15});
-            this.createWall({x: 0, y: i});
-            this.createWall({x: 15, y: i});
+            this.createWall({ x: i, y: 0 });
+            this.createWall({ x: i, y: 15 });
+            this.createWall({ x: 0, y: i });
+            this.createWall({ x: 15, y: i });
         }
+        this.createDoor({ x: 5, y: 5 }, { x: 4, y: 4 }, 1);
     }
 
     private createWall(pos: Pos.Pos) {
-            const sprite = new PosSprite(indexSprite(0, 8, Color.Gray));
-            sprite.pos = pos;
-            this._stage.addChild(sprite.sprite);
-            this._wallGrid.set(pos, Tile.Wall);
+        const sprite = new PosSprite(indexSprite(0, 8, Color.Gray));
+        sprite.pos = pos;
+        this._stage.addChild(sprite.sprite);
+        this._wallGrid.set(pos, Tile.Wall);
+    }
+
+    private createDoor(pos: Pos.Pos, to: Pos.Pos, sub: number) {
+        const destination = { areaID: this._id.next(sub), position: to };
+        this._wallGrid.set(pos, Tile.Door);
+        door(this._world, this, pos, destination);
     }
 
     /**
