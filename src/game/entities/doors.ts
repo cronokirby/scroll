@@ -14,7 +14,7 @@ import { Area } from "../dungeon/area";
  * @param world the world to create the door in
  */
 export function door(world: GameWorld, area: Area, pos: Pos, destination: Destination) {
-    const sprite = new PosSprite(indexSprite(12, 8, Color.Gray));
+    const sprite = new PosSprite(indexSprite(13, 8, Color.Gray));
     sprite.pos = pos;
     world.world.add({
         viewType: ViewType.Describing | ViewType.Playing,

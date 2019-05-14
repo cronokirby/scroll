@@ -18,12 +18,11 @@ class Dungeon {
     private createArea(id: AreaID) {
         let parentInfo;
         if (!id.isSame(AreaID.FIRST)) {
-            const exitPos = this.currentArea.exitPos(id);
-            if (exitPos) {
-                parentInfo = { id: this._currentArea, exitPos };
+            const exitLink = this.currentArea.exitLink(id);
+            if (exitLink) {
+                parentInfo = { id: this._currentArea, link: exitLink };
             }
         }
-        const parentID = id.isSame(AreaID.FIRST) ? undefined : this._currentArea;
         const area = new Area(id, this._world, parentInfo);
         this._areas.set(id.key, area);
     }

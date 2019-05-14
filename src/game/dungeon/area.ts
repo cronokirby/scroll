@@ -69,6 +69,23 @@ export class AreaID {
 
 
 /**
+ * Holds information about a link between two points.
+ * 
+ * This is useful in order to make sure areas can create doors
+ * corresponding to the exits that lead back into that area.
+ */
+export interface Link {
+    /**
+     * The location this door comes from
+     */
+    readonly from: Pos.Pos;
+    /**
+     * The location this door leads to
+     */
+    readonly to: Pos.Pos;
+}
+
+/**
  * Represents information about the parent of an area.
  * 
  * This is useful so that children of an area can create
@@ -80,10 +97,11 @@ export interface ParentInfo {
      */
     readonly id: AreaID;
     /**
-     * What location is the parent's exit leading to this area?
+     * What location did the parent lead to?
      */
-    readonly exitPos: Pos.Pos;
+    readonly link: Link;
 }
+
 
 
 enum Tile { Wall, Door, Free };
@@ -122,6 +140,21 @@ function wallSides(): Pos.Pos[] {
     return walls;
 }
 
+// Find a good place to put a door
+function doorPos(dir: Pos.Direction): Pos.Pos {
+    switch (dir) {
+        case Pos.Direction.Left:
+            return { x: 0, y: GRID_SIZE / 2 };
+        case Pos.Direction.Right:
+            return { x: GRID_SIZE - 1, y: GRID_SIZE / 2 };
+        case Pos.Direction.Up:
+            return { x: GRID_SIZE / 2, y: 0 };
+        case Pos.Direction.Down:
+            return { x: GRID_SIZE / 2, y: GRID_SIZE - 1 };
+    }
+}
+
+
 /**
  * Represents an Area of a dungeon, where entities reside, and we can move.
  * 
@@ -131,16 +164,21 @@ function wallSides(): Pos.Pos[] {
 export class Area {
     private _stage = new PIXI.Container();
     private _wallGrid = new Grid<Tile>(() => Tile.Free);
-    private _exits: Map<string, Pos.Pos> = new Map();
+    private _exits: Map<string, Link> = new Map();
 
     constructor(private readonly _id: AreaID, private readonly _world: GameWorld, parent?: ParentInfo) {
-        for (let pos of wallSides()) {
+        const rightPos = doorPos(Pos.Direction.Right);
+        const doors = [rightPos];
+        this.createDoor(rightPos, doorPos(Pos.Direction.Left), this._id.next(1));
+        if (parent) {
+            this.createDoor(parent.link.to, parent.link.from, parent.id);
+            doors.push(parent.link.to);
+        }
+        const wallTiles = wallSides().filter(x => !doors.find(y => Pos.same(x, y)));
+        for (let pos of wallTiles) {
             this.createWall(pos);
         }
-        this.createDoor({ x: 5, y: 5 }, { x: 4, y: 4 }, this._id.next(1));
-        if (parent) {
-            this.createDoor({ x: 4, y: 4 }, { x: 5, y: 5 }, parent.id);
-        }
+
     }
 
     private createWall(pos: Pos.Pos) {
@@ -154,7 +192,7 @@ export class Area {
         const destination = { areaID, position: to };
         this._wallGrid.set(pos, Tile.Door);
         door(this._world, this, pos, destination);
-        this._exits.set(areaID.key, pos);
+        this._exits.set(areaID.key, { from: pos, to });
     }
 
     /**
@@ -166,7 +204,7 @@ export class Area {
         stage.addChild(this._stage);
     }
 
-    exitPos(area: AreaID): Pos.Pos | undefined {
+    exitLink(area: AreaID): Link | undefined {
         return this._exits.get(area.key);
     }
 
