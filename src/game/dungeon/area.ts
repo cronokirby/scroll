@@ -68,6 +68,24 @@ export class AreaID {
 }
 
 
+/**
+ * Represents information about the parent of an area.
+ * 
+ * This is useful so that children of an area can create
+ * doors leading to the right place.
+ */
+export interface ParentInfo {
+    /**
+     * What id did the parent have?
+     */
+    readonly id: AreaID;
+    /**
+     * What location is the parent's exit leading to this area?
+     */
+    readonly exitPos: Pos.Pos;
+}
+
+
 enum Tile { Wall, Door, Free };
 
 class Grid<T> {
@@ -92,6 +110,18 @@ class Grid<T> {
     }
 }
 
+
+function wallSides(): Pos.Pos[] {
+    const walls: Pos.Pos[] = [];
+    for (let i = 0; i < GRID_SIZE; ++i) {
+        walls.push({ x: i, y: 0 });
+        walls.push({ x: i, y: 15 });
+        walls.push({ x: 0, y: i });
+        walls.push({ x: 15, y: i });
+    }
+    return walls;
+}
+
 /**
  * Represents an Area of a dungeon, where entities reside, and we can move.
  * 
@@ -101,17 +131,15 @@ class Grid<T> {
 export class Area {
     private _stage = new PIXI.Container();
     private _wallGrid = new Grid<Tile>(() => Tile.Free);
+    private _exits: Map<string, Pos.Pos> = new Map();
 
-    constructor(private readonly _id: AreaID, private readonly _world: GameWorld, parent?: AreaID) {
-        for (let i = 0; i < GRID_SIZE; ++i) {
-            this.createWall({ x: i, y: 0 });
-            this.createWall({ x: i, y: 15 });
-            this.createWall({ x: 0, y: i });
-            this.createWall({ x: 15, y: i });
+    constructor(private readonly _id: AreaID, private readonly _world: GameWorld, parent?: ParentInfo) {
+        for (let pos of wallSides()) {
+            this.createWall(pos);
         }
         this.createDoor({ x: 5, y: 5 }, { x: 4, y: 4 }, this._id.next(1));
         if (parent) {
-            this.createDoor({x: 4, y: 4}, {x: 5, y: 5}, parent);
+            this.createDoor({ x: 4, y: 4 }, { x: 5, y: 5 }, parent.id);
         }
     }
 
@@ -126,6 +154,7 @@ export class Area {
         const destination = { areaID, position: to };
         this._wallGrid.set(pos, Tile.Door);
         door(this._world, this, pos, destination);
+        this._exits.set(areaID.key, pos);
     }
 
     /**
@@ -135,6 +164,10 @@ export class Area {
      */
     addTo(stage: PIXI.Container) {
         stage.addChild(this._stage);
+    }
+
+    exitPos(area: AreaID): Pos.Pos | undefined {
+        return this._exits.get(area.key);
     }
 
     /**

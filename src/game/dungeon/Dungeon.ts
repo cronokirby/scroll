@@ -16,8 +16,15 @@ class Dungeon {
     }
 
     private createArea(id: AreaID) {
-        const parent = id.isSame(AreaID.FIRST) ? undefined : this._currentArea;
-        const area = new Area(id, this._world, parent);
+        let parentInfo;
+        if (!id.isSame(AreaID.FIRST)) {
+            const exitPos = this.currentArea.exitPos(id);
+            if (exitPos) {
+                parentInfo = { id: this._currentArea, exitPos };
+            }
+        }
+        const parentID = id.isSame(AreaID.FIRST) ? undefined : this._currentArea;
+        const area = new Area(id, this._world, parentInfo);
         this._areas.set(id.key, area);
     }
 
