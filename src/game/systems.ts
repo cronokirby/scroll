@@ -3,7 +3,7 @@ import * as Pos from './position';
 import GameWorld from './model/GameWorld';
 import { Fight, getDamage, heal } from './components/fight';
 import Consume from './components/Consume';
-import Area from './dungeon/area';
+import { Area } from './dungeon/area';
 import Destination from './components/Destination';
 
 
@@ -90,7 +90,7 @@ export function movePlayer(world: GameWorld, direction: Pos.Direction) {
     const query = baseQuery.select('isPlayer', 'sprite', 'area', 'fight').first();
     world.world.run(query.map(player => {
         const moved = Pos.moved(player.sprite.pos, direction);
-        if (!Pos.inGrid(moved) || player.area.isWall(moved)) return;
+        if (!Pos.inGrid(moved) || player.area.isWall(moved)) return {};
         const destination = doorAt(world, player.area, moved);
         if (destination) {
             world.dungeon.moveTo(destination.areaID);

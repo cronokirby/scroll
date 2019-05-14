@@ -101,16 +101,19 @@ export class Area {
     private _wallGrid = new Grid<Tile>(() => Tile.Free);
 
     constructor(private readonly _id: AreaID) {
-        for (let x = 0; x < GRID_SIZE; ++x) {
-            const sprite1 = new PosSprite(indexSprite(0, 8, Color.Gray));
-            const sprite2 = new PosSprite(indexSprite(0, 8, Color.Gray));
-            sprite1.pos = { x, y: 0 };
-            sprite2.pos = { x, y: 15 };
-            this._stage.addChild(sprite1.sprite);
-            this._stage.addChild(sprite2.sprite);
-            this._wallGrid.set({ x, y: 0 }, Tile.Door);
-            this._wallGrid.set({ x, y: 15 }, Tile.Door);
+        for (let i = 0; i < GRID_SIZE; ++i) {
+            this.createWall({x: i, y: 0});
+            this.createWall({x: i, y: 15});
+            this.createWall({x: 0, y: i});
+            this.createWall({x: 15, y: i});
         }
+    }
+
+    private createWall(pos: Pos.Pos) {
+            const sprite = new PosSprite(indexSprite(0, 8, Color.Gray));
+            sprite.pos = pos;
+            this._stage.addChild(sprite.sprite);
+            this._wallGrid.set(pos, Tile.Wall);
     }
 
     /**

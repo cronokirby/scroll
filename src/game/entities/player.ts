@@ -33,6 +33,7 @@ const playerFight: Fight = {
  */
 export function createPlayer(world: GameWorld) {
     const sprite = new PosSprite(indexSprite(0, 0));
+    sprite.pos = {x: 2, y: 2};
     world.addGameSprite(sprite.sprite, true);
     world.world.add({
         controlMarker: null,
