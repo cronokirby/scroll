@@ -5,6 +5,7 @@ import PosSprite from '../components/PosSprite';
 import * as Pos from '../position';
 import GameWorld from '../model/GameWorld';
 import { door } from '../entities/doors';
+import { shuffle } from '../../utils';
 
 
 /**
@@ -167,14 +168,28 @@ export class Area {
     private _exits: Map<string, Link> = new Map();
 
     constructor(private readonly _id: AreaID, private readonly _world: GameWorld, parent?: ParentInfo) {
-        const rightPos = doorPos(Pos.Direction.Right);
-        const doors = [rightPos];
-        this.createDoor(rightPos, doorPos(Pos.Direction.Left), this._id.next(1));
+        let availableDirs = Pos.DIRECTIONS;
+        const placedDoors: Pos.Pos[] = [];
+
         if (parent) {
-            this.createDoor(parent.link.to, parent.link.from, parent.id);
-            doors.push(parent.link.to);
+            const pos = parent.link.to;
+            this.createDoor(pos, parent.link.from, parent.id);
+            placedDoors.push(pos);
+            availableDirs = availableDirs.filter(dir => !Pos.same(doorPos(dir), pos));
         }
-        const wallTiles = wallSides().filter(x => !doors.find(y => Pos.same(x, y)));
+
+        shuffle(availableDirs);
+        const toTake = Math.floor(Math.random() * availableDirs.length) + 1;
+        let i = 0; 
+        for (const dir of availableDirs.slice(0, toTake)) {
+            const opDir = Pos.oppositeDir(dir);
+            const pos = doorPos(dir);
+            this.createDoor(pos, doorPos(opDir), this._id.next(i));
+            placedDoors.push(pos);
+            ++i;
+        }
+
+        const wallTiles = wallSides().filter(x => !placedDoors.find(y => Pos.same(x, y)));
         for (let pos of wallTiles) {
             this.createWall(pos);
         }

@@ -20,6 +20,25 @@ export enum Direction {
 export const DIRECTIONS = [Direction.Left, Direction.Right, Direction.Up, Direction.Down];
 
 /**
+ * Get the direction opposite to another direction.
+ * 
+ * @param dir the direction to flip
+ */
+export function oppositeDir(dir: Direction): Direction {
+    switch (dir) {
+        case Direction.Left:
+            return Direction.Right;
+        case Direction.Right:
+            return Direction.Left;
+        case Direction.Down:
+            return Direction.Up;
+        case Direction.Up:
+            return Direction.Down;
+    }
+}
+
+
+/**
  * Check whether or not 2 positions are the same.
  */
 export function same(p1: Pos, p2: Pos): boolean {
@@ -101,7 +120,7 @@ export function naiveNext(from: Pos, to: Pos): Pos {
 /**
  * Check whether or not a position is in the standard grid size.
  */
-export function inGrid({x, y}: Pos): boolean {
+export function inGrid({ x, y }: Pos): boolean {
     return x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE;
 }
 
