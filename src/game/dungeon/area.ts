@@ -101,6 +101,10 @@ export interface ParentInfo {
      * What location did the parent lead to?
      */
     readonly link: Link;
+    /**
+     * How dangerous was our parent?
+     */
+    readonly danger: number;
 }
 
 
@@ -166,12 +170,14 @@ export class Area {
     private _stage = new PIXI.Container();
     private _wallGrid = new Grid<Tile>(() => Tile.Free);
     private _exits: Map<string, Link> = new Map();
+    public readonly danger: number = 0;
 
     constructor(private readonly _id: AreaID, private readonly _world: GameWorld, parent?: ParentInfo) {
         let availableDirs = Pos.DIRECTIONS;
         const placedDoors: Pos.Pos[] = [];
 
         if (parent) {
+            this.danger = parent.danger + 1;
             const pos = parent.link.to;
             this.createDoor(pos, parent.link.from, parent.id);
             placedDoors.push(pos);

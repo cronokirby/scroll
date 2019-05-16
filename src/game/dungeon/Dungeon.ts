@@ -20,7 +20,11 @@ class Dungeon {
         if (!id.isSame(AreaID.FIRST)) {
             const exitLink = this.currentArea.exitLink(id);
             if (exitLink) {
-                parentInfo = { id: this._currentArea, link: exitLink };
+                parentInfo = {
+                    id: this._currentArea,
+                    link: exitLink,
+                    danger: this.currentArea.danger
+                };
             }
         }
         const area = new Area(id, this._world, parentInfo);
