@@ -11,21 +11,21 @@ import { Area } from '../dungeon/area';
 type MakeMonster = (world: GameWorld, area: Area, pos: Pos.Pos) => void;
 
 
-const mouseFight: Fight = {
-    stats: {
+class MouseFight implements Fight {
+    public readonly stats = {
         name: 'Mouse',
         health: 13,
         maxHealth: 13,
         attack: 2,
         defense: 2
-    },
+    };
 
     chooseAttack(): Attack {
         return {
             description: 'The Mouse bites with its tiny fangs!',
             attack: this.stats.attack
         };
-    },
+    }
 
     describeDamage(damage: number): string {
         return `The Mouse takes ${damage} damage`;
@@ -64,7 +64,7 @@ export function mouse(world: GameWorld, area: Area, pos: Pos.Pos) {
         viewType: ViewType.Describing | ViewType.Playing,
         description: 'A Tiny Mouse. Mostly harmless.',
         sprite,
-        fight: mouseFight,
+        fight: new MouseFight(),
         area,
         movement: new MouseMovement()
     });
