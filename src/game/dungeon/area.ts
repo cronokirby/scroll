@@ -7,6 +7,7 @@ import GameWorld from '../model/GameWorld';
 import { door } from '../entities/doors';
 import { shuffle } from '../../utils';
 import { randomItem } from '../entities/items';
+import { randomMonster } from '../entities/monsters';
 
 
 /**
@@ -214,11 +215,20 @@ export class Area {
 
         const free: Pos.Pos[] = freeTiles();
         shuffle(free);
+
         const itemAmount = Math.floor(Math.random() * 4);
         for (let i = 0; i < itemAmount; ++i) {
             const pos = free.pop();
             if (pos) {
                 randomItem(this.danger)(this._world, this, pos);
+            }
+        }
+
+        const monsterAmount = Math.floor(Math.random() * 4);
+        for (let i = 0; i < monsterAmount; ++i) {
+            const pos = free.pop();
+            if (pos) {
+                randomMonster(this.danger)(this._world, this, pos);
             }
         }
     }

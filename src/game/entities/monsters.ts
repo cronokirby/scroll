@@ -8,6 +8,9 @@ import * as Pos from '../position';
 import { Area } from '../dungeon/area';
 
 
+type MakeMonster = (world: GameWorld, area: Area, pos: Pos.Pos) => void;
+
+
 const mouseFight: Fight = {
     stats: {
         name: 'Mouse',
@@ -54,16 +57,29 @@ class MouseMovement implements Movement {
     }
 }
 
-export function mouse(world: GameWorld) {
+export function mouse(world: GameWorld, area: Area, pos: Pos.Pos) {
     const sprite = new PosSprite(indexSprite(0, 4));
-    sprite.pos = { x: 5, y: 5 };
+    sprite.pos = pos;
     world.world.add({
         viewType: ViewType.Describing | ViewType.Playing,
         description: 'A Tiny Mouse. Mostly harmless.',
         sprite,
         fight: mouseFight,
-        area: world.dungeon.currentArea,
+        area,
         movement: new MouseMovement()
     });
     world.addGameSprite(sprite.sprite);
+}
+
+
+/**
+ * Choose a random monster to generate.
+ * 
+ * Since the danger indicates progression in the dungeon, we want
+ * the monsters to get beefier and beefier.
+ * 
+ * @param danger how dangerous the monster should be
+ */
+export function randomMonster(danger: number): MakeMonster {
+    return mouse;
 }
