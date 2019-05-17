@@ -6,6 +6,7 @@ import * as Pos from '../position';
 import GameWorld from '../model/GameWorld';
 import { door } from '../entities/doors';
 import { shuffle } from '../../utils';
+import { greenLeaf } from '../entities/items';
 
 
 /**
@@ -200,6 +201,7 @@ export class Area {
             this.createWall(pos);
         }
 
+        greenLeaf(this._world, this, {x: 3, y: 3});
     }
 
     private createWall(pos: Pos.Pos) {

@@ -41,21 +41,6 @@ class Game {
         this._world.addTo(stage);
     }
 
-    private createLeaf(pos: Pos.Pos) {
-        const sprite = new PosSprite(indexSprite(11, 15, Color.Green));
-        sprite.pos = pos;
-        this._world.addGameSprite(sprite.sprite);
-        this._world.world.add({
-            collectable: null,
-            viewType: ViewType.Playing | ViewType.Describing,
-            area: this._world.dungeon.currentArea,
-            name: 'a Green Leaf',
-            description: 'A refreshing Green Leaf. Chew on it to restore health.',
-            consume: { restoreHealth: 5 },
-            sprite
-        });
-    }
-
     private updatePlayerStats() {
         systems.updatePlayerStats(this._world);
     }
