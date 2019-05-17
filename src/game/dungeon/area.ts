@@ -6,7 +6,7 @@ import * as Pos from '../position';
 import GameWorld from '../model/GameWorld';
 import { door } from '../entities/doors';
 import { shuffle } from '../../utils';
-import { greenLeaf } from '../entities/items';
+import { randomItem } from '../entities/items';
 
 
 /**
@@ -146,6 +146,17 @@ function wallSides(): Pos.Pos[] {
     return walls;
 }
 
+// Returns the free slots in the middle
+function freeTiles(): Pos.Pos[] {
+    const free: Pos.Pos[] = [];
+    for (let x = 1; x < GRID_SIZE - 1; ++x) {
+        for (let y = 1; y < GRID_SIZE - 1; ++y) {
+            free.push({ x, y });
+        }
+    }
+    return free;
+}
+
 // Find a good place to put a door
 function doorPos(dir: Pos.Direction): Pos.Pos {
     switch (dir) {
@@ -187,7 +198,7 @@ export class Area {
 
         shuffle(availableDirs);
         const toTake = Math.floor(Math.random() * availableDirs.length) + 1;
-        let i = 0; 
+        let i = 0;
         for (const dir of availableDirs.slice(0, toTake)) {
             const opDir = Pos.oppositeDir(dir);
             const pos = doorPos(dir);
@@ -201,7 +212,15 @@ export class Area {
             this.createWall(pos);
         }
 
-        greenLeaf(this._world, this, {x: 3, y: 3});
+        const free: Pos.Pos[] = freeTiles();
+        shuffle(free);
+        const itemAmount = Math.floor(Math.random() * 4);
+        for (let i = 0; i < itemAmount; ++i) {
+            const pos = free.pop();
+            if (pos) {
+                randomItem(this.danger)(this._world, this, pos);
+            }
+        }
     }
 
     private createWall(pos: Pos.Pos) {

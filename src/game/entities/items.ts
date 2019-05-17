@@ -31,11 +31,11 @@ export function greenLeaf(world: GameWorld, area: Area, pos: Pos.Pos) {
 /**
  * Choose a random item given a specific difficulty.
  * 
- * The difficulty is used to inform how far we've progressed in the dungeon.
+ * The danger is used to inform how far we've progressed in the dungeon.
  * The further we've progressed, the more powerful the items.
  * 
- * @param difficulty the difficulty that item should have
+ * @param danger the danger that item should have
  */
-export function randomItem(difficulty: number): MakeItem {
+export function randomItem(danger: number): MakeItem {
     return greenLeaf;
 }
