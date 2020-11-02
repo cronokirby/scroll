@@ -22,26 +22,6 @@ function hexColor(color: Color): number {
 }
 
 /**
- * Get a sprite in the sheet based on its index.
- *
- * @param x the x index of the sprite
- * @param y the y index of the sprite
- */
-export function indexSprite(
-  x: number,
-  y: number,
-  color = Color.White
-): PIXI.Sprite {
-  const baseTexture = PIXI.loader.resources[sheet].texture.baseTexture;
-  const rect = new PIXI.Rectangle(16 * x, 16 * y, 16, 16);
-  const texture = new PIXI.Texture(baseTexture, rect);
-  const sprite = new PIXI.Sprite(texture);
-  sprite.scale.set(2, 2);
-  sprite.tint = hexColor(color);
-  return sprite;
-}
-
-/**
  * Represents a sprite sheet containing different sprites
  * we can load.
  */
