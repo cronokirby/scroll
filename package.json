@@ -4,6 +4,8 @@
   "description": "Little dungeon crawler",
   "main": "index.js",
   "scripts": {
+    "start": "NODE_ENV=development parcel src/index.html",
+    "build": "NODE_ENV=production parcel build src/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Lúcás Meier",
@@ -13,7 +15,7 @@
     "typescript": "^3.4.5"
   },
   "dependencies": {
-    "micro-ecs": "^0.3.0",
+    "parcel-bundler": "^1.12.4",
     "pixi.js": "^4.8.7"
   }
 }
