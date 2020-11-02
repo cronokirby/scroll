@@ -22,6 +22,6 @@ const controller = new Controller();
 
 PIXI.loader.add(SpriteSheet.deps).load(() => {
   const sheet = new SpriteSheet();
-  const sprite = sheet.indexSprite(0, 0);
+  const sprite = sheet.indexSprite({ x: 0, y: 0 });
   app.stage.addChild(sprite);
 });

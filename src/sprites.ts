@@ -5,20 +5,29 @@ import { sheet } from "./assets/loader.js";
  * Represents the Color we can tint the sprites we load.
  */
 export enum Color {
-  White,
-  Gray,
-  Green,
+  White = 0xffffff,
+  Gray = 0x81858e,
+  Green = 0x3ce847,
 }
 
 function hexColor(color: Color): number {
-  switch (color) {
-    case Color.White:
-      return 0xffffff;
-    case Color.Gray:
-      return 0x81858e;
-    case Color.Green:
-      return 0x3ce847;
-  }
+  return color as number;
+}
+
+/**
+ * Represents a Sprite, at least logically.
+ *
+ * The idea is that we represent a sprite as just a position in the global sprite sheet.
+ *
+ * Another approach would be an enumeration of names, but this overlaps a bit with
+ * other definitions of monsters, and items, and things like that. Many items
+ * in the sheet don't have an obvious name either, so using a position
+ * is a lot clearer.
+ */
+export interface Sprite {
+  x: number;
+  y: number;
+  color?: Color;
 }
 
 /**
@@ -46,12 +55,12 @@ export class SpriteSheet {
    * @param x the x index of the sprite
    * @param y the y index of the sprite
    */
-  indexSprite(x: number, y: number, color = Color.White): PIXI.Sprite {
-    const rect = new PIXI.Rectangle(16 * x, 16 * y, 16, 16);
+  indexSprite(sprite: Sprite): PIXI.Sprite {
+    const rect = new PIXI.Rectangle(16 * sprite.x, 16 * sprite.y, 16, 16);
     const texture = new PIXI.Texture(this._baseTexture, rect);
-    const sprite = new PIXI.Sprite(texture);
-    sprite.scale.set(2, 2);
-    sprite.tint = hexColor(color);
-    return sprite;
+    const img = new PIXI.Sprite(texture);
+    img.scale.set(2, 2);
+    img.tint = hexColor(sprite.color ?? Color.White);
+    return img;
   }
 }
